@@ -1,4 +1,4 @@
-import { Box, Table,TableBody,TableRow,TableCell, TableContainer, TablePagination } from "@mui/material";
+import { Box, Table, TableBody, TableRow, TableCell, TableContainer, TablePagination } from "@mui/material";
 import Scrollbar from "./Scrollbar";
 import UserListTableHead from "./UserListTableHead";
 function createData(name, calories, fat, carbs, protein) {
@@ -13,30 +13,32 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 export default function UserListTable() {
-  <Box sx={{ p: 2 }}>
-    <Scrollbar>
-      <TableContainer sx={{ minWidth: 800}}>
-        <Table>
-          <UserListTableHead />
-          <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
-            </TableRow>
-          ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Scrollbar>
-    {/* <TablePagination/> */}
-  </Box>
+  return (
+    <Box sx={{ p: 2 }}>
+      <Scrollbar>
+        <TableContainer sx={{ minWidth: 800 }}>
+          <Table>
+            <UserListTableHead />
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow
+                  key={row.name}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.name}
+                  </TableCell>
+                  <TableCell align="right">{row.calories}</TableCell>
+                  <TableCell align="right">{row.fat}</TableCell>
+                  <TableCell align="right">{row.carbs}</TableCell>
+                  <TableCell align="right">{row.protein}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Scrollbar>
+      {/* <TablePagination/> */}
+    </Box>
+  )
 }

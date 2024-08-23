@@ -13,10 +13,35 @@ const style = {
   width: '75%'
 };
 
+const generateMenuItems = (start, end) => {
+  const items = [];
+  for (let i = start; i <= end; i++) {
+    const value = i.toString().padStart(2, '0'); // 2자리 문자열로 변환
+    items.push(
+      <MenuItem key={value} value={value}>
+        {value}
+      </MenuItem>
+    );
+  }
+  return items;
+};
+
+const TimeSelect = ({ defaultValue, start, end }) => (
+  <FormControl sx={{ m: 1 }}>
+    <Select defaultValue={defaultValue}>
+      {generateMenuItems(start, end)}
+    </Select>
+  </FormControl>
+);
+
 export default function ScheduleRegister({ open, setOpenModal, date }) {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const handleClose = () => setOpenModal(false);
+
+  const handleRegisterSchedule = () => {
+    setOpenModal(false);
+  }
   return (
 
     <Modal open={open} onClose={handleClose}>
@@ -28,37 +53,17 @@ export default function ScheduleRegister({ open, setOpenModal, date }) {
         </Box>
         <Box display="flex">
           <Typography sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>출근</Typography>
-          <FormControl sx={{ m: 1 }}>
-            <Select defaultValue="00">
-              <MenuItem value="00">00</MenuItem>
-              <MenuItem value="01">01</MenuItem>
-            </Select>
-          </FormControl>
+          <TimeSelect defaultValue="00" start={0} end={24} />
           <Typography sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>:</Typography>
-          <FormControl sx={{ m: 1 }}>
-            <Select defaultValue="00">
-              <MenuItem value="00">00</MenuItem>
-              <MenuItem value="01">01</MenuItem>
-            </Select>
-          </FormControl>
+          <TimeSelect defaultValue="00" start={0} end={59} />
         </Box>
         <Box display="flex">
           <Typography sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>퇴근</Typography>
-          <FormControl sx={{ m: 1 }}>
-            <Select defaultValue="00">
-              <MenuItem value="00">00</MenuItem>
-              <MenuItem value="01">01</MenuItem>
-            </Select>
-          </FormControl>
+          <TimeSelect defaultValue="00" start={0} end={24} />
           <Typography sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>:</Typography>
-          <FormControl sx={{ m: 1 }}>
-            <Select defaultValue="00">
-              <MenuItem value="00">00</MenuItem>
-              <MenuItem value="01">01</MenuItem>
-            </Select>
-          </FormControl>
+          <TimeSelect defaultValue="00" start={0} end={59} />
         </Box>
-        <Button variant="contained" color="primary" sx={{ marginTop: "20px" }}>등록하기</Button>
+        <Button variant="contained" color="primary" sx={{ marginTop: "20px" }} onClick={handleRegisterSchedule}>등록하기</Button>
       </Box>
     </Modal>
 

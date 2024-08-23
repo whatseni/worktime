@@ -39,7 +39,7 @@ export default function Header({ onOpenNav }) {
       >
         {!lgUp && (
           <IconButton onClick={onOpenNav} sx={{ mr: 1 }}>
-            <Icon icon="eva:home-outline" />
+            <Icon icon="eva:menu-outline" />
           </IconButton>
         )}
 

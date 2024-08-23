@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { useResponsive } from '../hooks/use-responsive';
 import Scrollbar from "../components/Scrollbar"
 import { orange } from '@mui/material/colors';
-import {  Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 // ----------------------------------------------------------------------
 
 export default function Nav({ openNav, onCloseNav }) {
@@ -26,13 +26,13 @@ export default function Nav({ openNav, onCloseNav }) {
         flexDirection: 'column',
       },
     }}>
-        <Box sx={{ px: 2.5, py: 3}}>
-          <Box  component={RouterLink} to="/" sx={{display: 'inline-flex'}}>
-            <IconButton sx={{ width:40, height: 40 }}>
-              <Icon icon="eva:home-outline" />
-            </IconButton>
-          </Box>
+      <Box sx={{ px: 2.5, py: 3 }}>
+        <Box component={RouterLink} to="/calendar" sx={{ display: 'inline-flex' }}>
+          <IconButton sx={{ width: 40, height: 40 }}>
+            <Icon icon="eva:home-outline" />
+          </IconButton>
         </Box>
+      </Box>
 
       <Box
         sx={{
@@ -56,7 +56,7 @@ export default function Nav({ openNav, onCloseNav }) {
           </Typography>
         </Box>
       </Box>
-      <Stack component="nav" spacing={0.5} sx={{ px: 2, marginTop: "100px" }}>
+      <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
         {
           sidebarConfig.map((item) => (
             <NavItem key={item.title} item={item} />
