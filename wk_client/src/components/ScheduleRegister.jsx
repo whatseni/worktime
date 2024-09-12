@@ -1,5 +1,5 @@
 import { Box, Button, FormControl, MenuItem, Modal, Select, TextField, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const style = {
   position: 'absolute',
@@ -42,6 +42,10 @@ export default function ScheduleRegister({ open, setOpenModal, date }) {
   const handleRegisterSchedule = () => {
     setOpenModal(false);
   }
+
+  useEffect(() => {
+
+  })
   return (
 
     <Modal open={open} onClose={handleClose}>
