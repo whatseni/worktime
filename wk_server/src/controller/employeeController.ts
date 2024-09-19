@@ -38,13 +38,17 @@ export const loginEmployee = async (req: Request, res: Response) => {
     if (findOne) {
       res.status(200).json({
         // 이름과 폰번호 반환
-        "message": "Employee Access Success"
+        code: "1",
+        message: "Employee Access Success",
+        employeeName: findOne.employeeName,
+        employeePhone: findOne.employeePhone,
+        company: findOne.employeeCompany
       })
     } else {
       throw new Error("Employee Access Failed")
     }
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ code: "-1", message: error.message });
   }
 }
 

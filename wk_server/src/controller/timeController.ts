@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Time from "../model/Time";
+import { formatDate } from "../utils/checker";
 
 // 월별 특정 사용자 근무 시간 조회
 export const getUserWorkTimesByMonth = async (req: Request, res: Response) => {
@@ -18,7 +19,15 @@ export const getUserWorkTimesByMonth = async (req: Request, res: Response) => {
         $lt: endDate
       }
      })
-    res.status(200).json(workTimes);
+    const returnRes = workTimes.map((work) => {
+      const temp = {
+        date: formatDate(work.workDate),
+        startTime: work.startTime,
+        endTime: work.endTime
+      }
+      return temp;
+    })
+    res.status(200).json({code: '1', data: returnRes});
   } catch (error:any) {
     res.status(500).json({ message: error.message });
   }
@@ -48,6 +57,19 @@ export const getAllUsersTimeByCompanyAndMonth = async (req: Request, res: Respon
   }
 }
 
+// 특정 날짜에 특정 사용자 근무 기록 조회
+export const getUserTimeBySpecificDate = async (req: Request, res: Response) => {
+  try {
+    const { employeeName, employeePhone, date } = req.body;
+
+    const result = await Time.findOne({ employeeName: employeeName, employeePhone:employeePhone, workDate: new Date(date)})
+    console.log(result)
+    if (result) res.status(200).json({ code: "1", isWorked: true, startTime: result.startTime, endTime: result.endTime});
+    else res.status(200).json({ code: "1", isWorked: false })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
 
 // 근무 시간 기록 생성
 export const createWorkTime = async (req: Request, res: Response) => {

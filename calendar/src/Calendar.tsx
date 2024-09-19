@@ -81,12 +81,12 @@ export default function Calendar({ onDateClick, events, onMonthEvent, onEventCli
       const event = getEventForDate(`${selectedYear}-${selectedMonth}-${date}`);
 
       dates.push(
-        <DateBox key={date} isToday={isToday} data-date={date}
+        <DateBox key={date} istoday={isToday} data-date={date}
           onClick={() => onDateClick(`${selectedYear}-${selectedMonth}-${date}`)}>
           {event && (
             <ScheduleList>
               {event.map((e: Event, index: number) => (
-                <li key={index} onClick={() => onEventClick(e)}>{e.title}</li>
+                <li key={index} onClick={() => onEventClick(e)}>{e.startTime + '~' + e.endTime}</li>
               ))}
             </ScheduleList>
           )}
@@ -179,13 +179,13 @@ const DateContainer = styled.div`
   grid-auto-rows: minmax(80px, auto);
 `;
 
-const DateBox = styled.div<{ isToday: boolean }>`
+const DateBox = styled.div<{ istoday: boolean }>`
   position: relative;
   border: 1px solid #ddd;
   cursor: pointer;
   min-height: 100%;
   transition: background-color 0.3s, color 0.3s;
-  background-color: ${({ isToday }) => (isToday ? '#f0f0f0' : 'transparent')};
+  background-color: ${({ istoday }) => (istoday ? '#f0f0f0' : 'transparent')};
 
   &::before {
     content: attr(data-date);

@@ -3,8 +3,9 @@
  */
 
 export type Event = {
-  title: string;
-  date: string
+  date: string;
+  startTime: string;
+  endTime: string;
 }
 export interface CalendarPropsType {
   onDateClick: (date: string) => void;

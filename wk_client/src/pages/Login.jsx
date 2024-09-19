@@ -26,14 +26,13 @@ export default function Login() {
         employeePhone: phoneNumber,
         employeeBirth: birth
       });
-      console.log(result)
-      if (result.data.message) {
+      if (result.data.code === "1") {
+        dispatch(loginUser(result.data.employeeName, result.data.employeePhone, result.data.company));
         navigate('/');
-        // TODO :: 반환받은 이름 dispatch 저장
-        dispatch(loginUser('test'));
       }
     } catch (err) {
       console.error(err);
+      window.alert('접속 실패 다시 시도해주세요.')
     }
   }
   return (
