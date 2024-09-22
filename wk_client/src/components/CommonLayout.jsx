@@ -2,7 +2,7 @@ import { Box, Container } from "@mui/material";
 
 export default function CommonLayout({ children }) {
   return (
-    <Container maxWidth="sm" sx={{
+    <Container sx={{
       position: "absolute",
       top: "45%",
       left: "50%",

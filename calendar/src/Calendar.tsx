@@ -21,8 +21,10 @@ export default function Calendar({ onDateClick, events, onMonthEvent, onEventCli
   const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
   const [selectedDate, setSelectedDate] = useState<number>(today.getDate());
 
-  const getEventForDate = useCallback((date: string) => {
-    return events ? events.filter((event: Event) => event.date === date) : null;
+  const getEventForDate = useCallback((year: number, month: number, day: number) => {
+    const m = String(month + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+    const d = String(day).padStart(2, '0');
+    return events ? events.filter((event) => event.date === `${year}-${m}-${d}`) : null;
   }, [events]);
 
   const prevMonth = useCallback(() => {
@@ -78,11 +80,11 @@ export default function Calendar({ onDateClick, events, onMonthEvent, onEventCli
       const isToday = today.getFullYear() === selectedYear &&
         today.getMonth() === selectedMonth &&
         today.getDate() === date;
-      const event = getEventForDate(`${selectedYear}-${selectedMonth}-${date}`);
+      const event = getEventForDate(selectedYear, selectedMonth, date);
 
       dates.push(
         <DateBox key={date} istoday={isToday} data-date={date}
-          onClick={() => onDateClick(`${selectedYear}-${selectedMonth}-${date}`)}>
+          onClick={() => onDateClick(`${selectedYear}-${selectedMonth + 1}-${date}`)}>
           {event && (
             <ScheduleList>
               {event.map((e: Event, index: number) => (
@@ -176,7 +178,7 @@ const DayBox = styled.div`
 const DateContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: minmax(80px, auto);
+  grid-auto-rows: minmax(100px, auto);
 `;
 
 const DateBox = styled.div<{ istoday: boolean }>`
@@ -184,6 +186,7 @@ const DateBox = styled.div<{ istoday: boolean }>`
   border: 1px solid #ddd;
   cursor: pointer;
   min-height: 100%;
+  min-width: 100%;
   transition: background-color 0.3s, color 0.3s;
   background-color: ${({ istoday }) => (istoday ? '#f0f0f0' : 'transparent')};
 
@@ -235,5 +238,3 @@ const ScheduleList = styled.ul`
     }
   }
 `;
-
-// Add any necessary responsive styles with media queries using styled-components' `@media` feature as needed.

@@ -3,8 +3,8 @@ import CommonLayout from "../components/CommonLayout";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loginUser } from './../store/UserReducer';
 import axios from "axios";
+import { login } from "../store/userSlice";
 
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState(null);
@@ -27,7 +27,13 @@ export default function Login() {
         employeeBirth: birth
       });
       if (result.data.code === "1") {
-        dispatch(loginUser(result.data.employeeName, result.data.employeePhone, result.data.company));
+        let obj = {
+          name: result.data.employeeName,
+          phone: result.data.employeePhone,
+          company: result.data.company
+        }
+        window.localStorage.setItem("userInfo", JSON.stringify(obj));
+        dispatch(login({ name: result.data.employeeName, phone: result.data.employeePhone, company: result.data.company }));
         navigate('/');
       }
     } catch (err) {
@@ -35,6 +41,7 @@ export default function Login() {
       window.alert('접속 실패 다시 시도해주세요.')
     }
   }
+
   return (
     <CommonLayout>
       <Typography sx={{

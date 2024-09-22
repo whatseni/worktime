@@ -65,7 +65,6 @@ export default function Calendar() {
         selectMonth: month
       })
       if (response.data.code === '1') {
-        console.log(response.data.data)
         setMonthEvents(response.data.data)
       } else {
         throw new Error('응답 실패. 다시 시도해주세요.')
