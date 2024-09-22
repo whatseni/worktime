@@ -3,6 +3,7 @@ import ScheduleRegister from './ScheduleRegister';
 import { Calendar as MyCalendar } from 'my_calendar';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { Typography } from '@mui/material';
 
 const formatDate = (input) => {
   const date = new Date(input);
@@ -23,6 +24,8 @@ export default function Calendar() {
   const [existedTimeData, setExistedTimeData] = useState(null);
   const [monthEvents, setMonthEvents] = useState(null);
 
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
+  const [monthTotalTime, setMonthTotalTime] = useState(null);
   const { currentUser, currentPhone } = useSelector((state) => state.user);
 
   const onDateClick = async (date) => {
@@ -48,6 +51,7 @@ export default function Calendar() {
   }
 
   const onMonthEvent = (year, month) => {
+    setCurrentMonth(month + 1);
     handleEmployeeWork(year, month)
   }
 
@@ -75,14 +79,25 @@ export default function Calendar() {
     }
   }
 
+  const handleGetAllTimeByMonth = async (month) => {
+    const response = await axios.post("http://localhost:5000/time/get-user-alltime-month", {
+      employeeName: currentUser,
+      employeePhone: currentPhone,
+      selectMonth: month
+    })
+    // setMonthTotalTime();
+  }
+
   useEffect(() => {
     handleEmployeeWork(today.getFullYear(), today.getMonth() + 1);
+    handleGetAllTimeByMonth(currentMonth)
   }, [])
 
   return (
     <>
       <MyCalendar onMonthEvent={onMonthEvent} events={monthEvents} onDateClick={onDateClick} onEventClick={onEventClick} />
       <ScheduleRegister open={openModal} setOpenModal={setOpenModal} date={selectedDate} hasTimeDate={hasTimeDate} timeData={existedTimeData} />
+      <Typography>{currentMonth}월 총 근무 시간 : {monthTotalTime}</Typography>
     </>
   );
 }

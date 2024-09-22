@@ -63,9 +63,28 @@ export const getUserTimeBySpecificDate = async (req: Request, res: Response) => 
     const { employeeName, employeePhone, date } = req.body;
 
     const result = await Time.findOne({ employeeName: employeeName, employeePhone:employeePhone, workDate: new Date(date)})
-    console.log(result)
     if (result) res.status(200).json({ code: "1", isWorked: true, startTime: result.startTime, endTime: result.endTime});
     else res.status(200).json({ code: "1", isWorked: false })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+// 근로자별 한달 총 근무 시간 조회
+export const getUserAllTimeByMonth = async (req: Request, res: Response) => {
+  try {
+    const { employeeName, employeePhone, selectMonth } = req.body;
+    const year = new Date().getFullYear();
+    // 선택된 월의 첫 번째 날
+    const startDate = new Date(`${year}-${selectMonth}-01`);
+    // 다음 달의 첫 번째 날
+    const endDate = new Date(`${year}-${selectMonth}-01`);
+    endDate.setMonth(endDate.getMonth() + 1);
+    const result = await Time.find({ employeeName: employeeName, employeePhone:employeePhone, workDate: {
+      $gte: startDate,
+      $lt: endDate
+    }})
+    console.log(result)
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
