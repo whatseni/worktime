@@ -25,14 +25,14 @@ export default function Calendar() {
   const [monthEvents, setMonthEvents] = useState(null);
 
   const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
-  const [monthTotalTime, setMonthTotalTime] = useState(null);
+  const [monthTotalTime, setMonthTotalTime] = useState(0);
   const { currentUser, currentPhone } = useSelector((state) => state.user);
 
   const onDateClick = async (date) => {
     const response = await axios.post('http://localhost:5000/time/get-user-time-date', {
       employeeName: currentUser,
       employeePhone: currentPhone,
-      date: date // '2024-09-12'
+      date: date // '2024-09-12' 현재는 '2024-9-2' 이런식
     })
     if (response.data.code === "1") {
       if (response.data.isWorked) {
@@ -52,7 +52,6 @@ export default function Calendar() {
 
   const onMonthEvent = (year, month) => {
     setCurrentMonth(month + 1);
-    handleEmployeeWork(year, month)
   }
 
   const onOpenScheduleModal = (selected) => {
@@ -61,7 +60,7 @@ export default function Calendar() {
   }
 
   // TODO :: 년도도 측정하기
-  const handleEmployeeWork = async (year, month) => {
+  const handleEmployeeWork = async (month) => {
     try {
       const response = await axios.post("http://localhost:5000/time/get-user-time-month", {
         employeeName: currentUser,
@@ -80,18 +79,27 @@ export default function Calendar() {
   }
 
   const handleGetAllTimeByMonth = async (month) => {
-    const response = await axios.post("http://localhost:5000/time/get-user-alltime-month", {
-      employeeName: currentUser,
-      employeePhone: currentPhone,
-      selectMonth: month
-    })
-    // setMonthTotalTime();
+    try {
+      const response = await axios.post("http://localhost:5000/time/get-user-alltime-month", {
+        employeeName: currentUser,
+        employeePhone: currentPhone,
+        selectMonth: month
+      })
+      if (response.data.code === 1) {
+        setMonthTotalTime(response.data.data.allTime);
+      } else {
+        throw new Error('응답 실패. 다시 시도해주세요.')
+      }
+    } catch (error) {
+      console.error(error);
+      window.alert('근무 시간 가져오기 실패. 다시 시도해주세요.')
+    }
   }
 
   useEffect(() => {
-    handleEmployeeWork(today.getFullYear(), today.getMonth() + 1);
+    handleEmployeeWork(currentMonth);
     handleGetAllTimeByMonth(currentMonth)
-  }, [])
+  }, [currentMonth])
 
   return (
     <>

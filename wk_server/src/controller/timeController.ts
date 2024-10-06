@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Time from "../model/Time";
 import { formatDate } from "../utils/checker";
+import { getAllTime } from "../utils/func";
 
 // 월별 특정 사용자 근무 시간 조회
 export const getUserWorkTimesByMonth = async (req: Request, res: Response) => {
@@ -62,7 +63,8 @@ export const getUserTimeBySpecificDate = async (req: Request, res: Response) => 
   try {
     const { employeeName, employeePhone, date } = req.body;
 
-    const result = await Time.findOne({ employeeName: employeeName, employeePhone:employeePhone, workDate: new Date(date)})
+    const result = await Time.findOne({ employeeName: employeeName, employeePhone: employeePhone, workDate: new Date(date)})
+    
     if (result) res.status(200).json({ code: "1", isWorked: true, startTime: result.startTime, endTime: result.endTime});
     else res.status(200).json({ code: "1", isWorked: false })
   } catch (error: any) {
@@ -70,7 +72,7 @@ export const getUserTimeBySpecificDate = async (req: Request, res: Response) => 
   }
 }
 
-// 근로자별 한달 총 근무 시간 조회
+// 근로자 특정 월 총 근무 시간
 export const getUserAllTimeByMonth = async (req: Request, res: Response) => {
   try {
     const { employeeName, employeePhone, selectMonth } = req.body;
@@ -84,7 +86,16 @@ export const getUserAllTimeByMonth = async (req: Request, res: Response) => {
       $gte: startDate,
       $lt: endDate
     }})
-    console.log(result)
+    if (result) {
+      const response = getAllTime(result)
+      res.status(200).json({code: 1, data: {
+        'allTime': response
+      }})
+    } else {
+      res.status(200).json({code: 1, data: {
+        'allTime': 0
+      }})
+    }
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
