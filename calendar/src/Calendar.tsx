@@ -84,7 +84,7 @@ export default function Calendar({ onDateClick, events, onMonthEvent, onEventCli
 
       dates.push(
         <DateBox key={date} istoday={isToday} data-date={date}
-          onClick={() => onDateClick(`${selectedYear}-${selectedMonth + 1}-${date}`)}>
+          onClick={() => onDateClick(`${selectedYear}-${(selectedMonth + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`)}>
           {event && (
             <ScheduleList>
               {event.map((e: Event, index: number) => (

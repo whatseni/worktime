@@ -34,9 +34,9 @@ const TimeSelect = ({ defaultValue, start, end }) => (
   </FormControl>
 );
 
-export default function ScheduleRegister({ open, setOpenModal, date }) {
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+export default function ScheduleRegister({ open, setOpenModal, date, timeData }) {
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
   const handleClose = () => setOpenModal(false);
 
   const handleRegisterSchedule = () => {
@@ -44,8 +44,10 @@ export default function ScheduleRegister({ open, setOpenModal, date }) {
   }
 
   useEffect(() => {
-
-  })
+    setStartTime(timeData.startTime.split(':'))
+    setEndTime(timeData.endTime.split(':'))
+    console.log(timeData)
+  }, [])
   return (
 
     <Modal open={open} onClose={handleClose}>
@@ -57,15 +59,15 @@ export default function ScheduleRegister({ open, setOpenModal, date }) {
         </Box>
         <Box display="flex">
           <Typography sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>출근</Typography>
-          <TimeSelect defaultValue="00" start={0} end={24} />
+          <TimeSelect defaultValue={startTime ? startTime[0] : "00"} start={0} end={24} />
           <Typography sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>:</Typography>
-          <TimeSelect defaultValue="00" start={0} end={59} />
+          <TimeSelect defaultValue={startTime ? startTime[1] : "00"} start={0} end={59} />
         </Box>
         <Box display="flex">
           <Typography sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>퇴근</Typography>
-          <TimeSelect defaultValue="00" start={0} end={24} />
+          <TimeSelect defaultValue={endTime ? endTime[0] : "00"} start={0} end={24} />
           <Typography sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>:</Typography>
-          <TimeSelect defaultValue="00" start={0} end={59} />
+          <TimeSelect defaultValue={endTime ? endTime[1] : "00"} start={0} end={59} />
         </Box>
         <Button variant="contained" color="primary" sx={{ marginTop: "20px" }} onClick={handleRegisterSchedule}>등록하기</Button>
       </Box>
