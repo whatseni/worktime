@@ -15,16 +15,15 @@ const DAY = ['일', '월', '화', '수', '목', '금', '토'];
  * <Calendar />
  * ```
  */
-export default function Calendar({ onDateClick, events, onMonthEvent, onEventClick }: CalendarPropsType) {
+export default function Calendar({ onChangeMonth, events, onClickDate, onClickEvent }: CalendarPropsType) {
   const today = new Date();
   const [selectedYear, setSelectedYear] = useState<number>(today.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
-  const [selectedDate, setSelectedDate] = useState<number>(today.getDate());
 
   const getEventForDate = useCallback((year: number, month: number, day: number) => {
-    const m = String(month + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
-    const d = String(day).padStart(2, '0');
-    return events ? events.filter((event) => event.date === `${year}-${m}-${d}`) : null;
+    const formatMonth = String(month + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+    const formatDay = String(day).padStart(2, '0');
+    return events ? events.filter((event) => event.date === `${year}-${formatMonth}-${formatDay}`) : null;
   }, [events]);
 
   const prevMonth = useCallback(() => {
@@ -38,8 +37,8 @@ export default function Calendar({ onDateClick, events, onMonthEvent, onEventCli
       year = selectedMonth === 0 ? prev - 1 : prev;
       return year;
     });
-    onMonthEvent(year, month);
-  }, [onMonthEvent, selectedMonth]);
+    onChangeMonth(year, month);
+  }, [onChangeMonth, selectedMonth]);
 
   const nextMonth = useCallback(() => {
     let month = 0;
@@ -52,8 +51,8 @@ export default function Calendar({ onDateClick, events, onMonthEvent, onEventCli
       year = selectedMonth === 11 ? prev + 1 : prev;
       return year;
     });
-    onMonthEvent(year, month);
-  }, [onMonthEvent, selectedMonth]);
+    onChangeMonth(year, month);
+  }, [onChangeMonth, selectedMonth]);
 
   const getDateCountInMonth = (year: number, month: number) => {
     const date = new Date(year, month + 1, 0);
@@ -84,11 +83,11 @@ export default function Calendar({ onDateClick, events, onMonthEvent, onEventCli
 
       dates.push(
         <DateBox key={date} istoday={isToday} data-date={date}
-          onClick={() => onDateClick(`${selectedYear}-${(selectedMonth + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`)}>
+          onClick={() => onClickDate(`${selectedYear}-${(selectedMonth + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`)}>
           {event && (
             <ScheduleList>
               {event.map((e: Event, index: number) => (
-                <li key={index} onClick={() => onEventClick(e)}>{e.startTime + '~' + e.endTime}</li>
+                <li key={index} onClick={() => onClickEvent(e)}>{e.startTime + '~' + e.endTime}</li>
               ))}
             </ScheduleList>
           )}
