@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Time from "../model/Time";
 import { formatDate } from "../utils/checker";
 import { getAllTime } from "../utils/func";
+import { ReturnCode } from "../utils/Code";
 
 // 월별 특정 사용자 근무 시간 조회
 export const getUserWorkTimesByMonth = async (req: Request, res: Response) => {
@@ -20,7 +21,7 @@ export const getUserWorkTimesByMonth = async (req: Request, res: Response) => {
         $lt: endDate
       }
      })
-    const returnRes = workTimes.map((work) => {
+    const returnResult = workTimes.map((work) => {
       const temp = {
         date: formatDate(work.workDate),
         startTime: work.startTime,
@@ -28,9 +29,9 @@ export const getUserWorkTimesByMonth = async (req: Request, res: Response) => {
       }
       return temp;
     })
-    res.status(200).json({code: '1', data: returnRes});
-  } catch (error:any) {
-    res.status(500).json({ message: error.message });
+    res.status(200).json({code: ReturnCode.SUCCESS, data: returnResult});
+  } catch (error) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 };
 
@@ -52,9 +53,9 @@ export const getAllUsersTimeByCompanyAndMonth = async (req: Request, res: Respon
         $lt: endDate
       }
      })
-    res.status(200).json(workTimes);
-  } catch (error:any) {
-    res.status(500).json({ message: error.message });
+    res.status(200).json({code: ReturnCode.SUCCESS, data: workTimes});
+  } catch (error) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 }
 
@@ -65,10 +66,10 @@ export const getUserTimeBySpecificDate = async (req: Request, res: Response) => 
 
     const result = await Time.findOne({ employeeName: employeeName, employeePhone: employeePhone, workDate: new Date(date)})
     
-    if (result) res.status(200).json({ code: "1", isWorked: true, startTime: result.startTime, endTime: result.endTime});
-    else res.status(200).json({ code: "1", isWorked: false })
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    if (result) res.status(200).json({ code: ReturnCode.SUCCESS, isWorked: true, startTime: result.startTime, endTime: result.endTime});
+    else res.status(200).json({ code: ReturnCode.SUCCESS, isWorked: false })
+  } catch (error) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 }
 
@@ -88,16 +89,16 @@ export const getUserAllTimeByMonth = async (req: Request, res: Response) => {
     }})
     if (result) {
       const response = getAllTime(result)
-      res.status(200).json({code: 1, data: {
+      res.status(200).json({code: ReturnCode.SUCCESS, data: {
         'allTime': response
       }})
     } else {
-      res.status(200).json({code: 1, data: {
+      res.status(200).json({code: ReturnCode.SUCCESS, data: {
         'allTime': 0
       }})
     }
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+  } catch (error) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 }
 
@@ -107,9 +108,9 @@ export const createWorkTime = async (req: Request, res: Response) => {
     const { employeeName, employeePhone, workDate, startTime, endTime, company } = req.body;
     const createTimeResult = new Time({ employeeName, employeePhone, workDate, startTime, endTime, company })
     await createTimeResult.save();
-    res.status(200).json(createTimeResult);
-  } catch (error:any) {
-    res.status(500).json({ message: error.message });
+    res.status(200).json({ code: ReturnCode.SUCCESS, data: createTimeResult });
+  } catch (error) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 };
 
@@ -118,9 +119,9 @@ export const updateWorkTime = async (req: Request, res: Response) => {
   try {
     const { employeeName, employeePhone, workDate, startTime, endTime, company } = req.body;
     const updateTimeResult = await Time.findOneAndUpdate({ employeeName, employeePhone, workDate, startTime, endTime, company })
-    res.status(200).json(updateTimeResult);
-  } catch (error:any) {
-    res.status(500).json({ message: error.message });
+    res.status(200).json({ code: ReturnCode.SUCCESS, data: updateTimeResult });
+  } catch (error) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 }
 
@@ -129,8 +130,8 @@ export const deleteWorkTime = async (req: Request, res: Response) => {
   try {
     const { employeeName, employeePhone, workDate, startTime, endTime, company } = req.body;
     const deleteTimeResult = await Time.findOneAndDelete({ employeeName, employeePhone, workDate, startTime, endTime, company })
-    res.status(200).json(deleteTimeResult);
-  } catch (error:any) {
-    res.status(500).json({ message: error.message });
+    res.status(200).json({ code: ReturnCode.SUCCESS, data: deleteTimeResult });
+  } catch (error) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 }

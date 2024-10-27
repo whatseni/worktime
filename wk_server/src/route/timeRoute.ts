@@ -3,7 +3,6 @@ import { createWorkTime, deleteWorkTime, getAllUsersTimeByCompanyAndMonth, getUs
 
 const timeRouter = Router();
 
-timeRouter.post("/create-worktime", createWorkTime)
 timeRouter.post("/update-worktime", updateWorkTime)
 timeRouter.post("/delete-worktime", deleteWorkTime)
 
