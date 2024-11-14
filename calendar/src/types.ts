@@ -18,5 +18,5 @@ export interface CalendarPropsType {
   onClickDate: (date: string) => void;
   events: Event[] | null;
   onChangeMonth: (year: number, month: number) => void;
-  onClickEvent: (event: Event) => void;
+  onClickEvent: (e: React.MouseEvent, event: Event) => void;
 }

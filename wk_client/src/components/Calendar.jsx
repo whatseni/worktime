@@ -28,7 +28,8 @@ export default function Calendar() {
   }
 
   // 날짜 내 이벤트 클릭
-  const onClickEvent = async (event) => {
+  const onClickEvent = async (clickevent, event) => {
+    clickevent.stopPropagation();
     setExistedEvent({ startTime: event.startTime, endTime: event.endTime })
     onOpenScheduleModal(event.date);
   }
@@ -87,13 +88,13 @@ export default function Calendar() {
   useEffect(() => {
     handleGetEventsByMonth(currentYear, currentMonth);
     handleGetAllTimeByMonth(currentYear, currentMonth);
-  }, [currentMonth])
+  }, [currentMonth, currentYear, openModal])
 
   return (
     <>
       <MyCalendar onChangeMonth={onChangeMonth} events={monthEvents} onClickDate={onClickDate} onClickEvent={onClickEvent} />
       <ScheduleRegister open={openModal} setOpenModal={setOpenModal} selectedDate={selectedDate} existedEvent={existedEvent} />
-      <Typography>{currentMonth}월 총 근무 시간 : {monthTotalTime}</Typography>
+      <Typography>{currentMonth}월 총 근무 시간 : {parseInt(monthTotalTime / 60)}시간 {monthTotalTime % 60}분</Typography>
     </>
   );
 }

@@ -27,32 +27,25 @@ export default function Calendar({ onChangeMonth, events, onClickDate, onClickEv
   }, [events]);
 
   const prevMonth = useCallback(() => {
-    let month = 0;
-    let year = 0;
-    setSelectedMonth((prev: number) => {
-      month = prev === 0 ? 11 : prev - 1;
-      return month;
-    });
-    setSelectedYear((prev: number) => {
-      year = selectedMonth === 0 ? prev - 1 : prev;
-      return year;
-    });
-    onChangeMonth(year, month);
-  }, [onChangeMonth, selectedMonth]);
+    const newMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
+    const newYear = selectedMonth === 0 ? selectedYear - 1 : selectedYear;
+
+    setSelectedMonth(newMonth);
+    setSelectedYear(newYear);
+
+    onChangeMonth(newYear, newMonth);
+  }, [onChangeMonth, selectedYear, selectedMonth]);
 
   const nextMonth = useCallback(() => {
-    let month = 0;
-    let year = 0;
-    setSelectedMonth((prev: number) => {
-      month = prev === 11 ? 0 : prev + 1;
-      return month;
-    });
-    setSelectedYear((prev: number) => {
-      year = selectedMonth === 11 ? prev + 1 : prev;
-      return year;
-    });
-    onChangeMonth(year, month);
-  }, [onChangeMonth, selectedMonth]);
+    const newMonth = selectedMonth === 11 ? 0 : selectedMonth + 1;
+    const newYear = selectedMonth === 11 ? selectedYear + 1 : selectedYear;
+
+    setSelectedMonth(newMonth);
+    setSelectedYear(newYear);
+
+    onChangeMonth(newYear, newMonth);
+  }, [onChangeMonth, selectedYear, selectedMonth]);
+
 
   const getDateCountInMonth = (year: number, month: number) => {
     const date = new Date(year, month + 1, 0);
@@ -86,8 +79,8 @@ export default function Calendar({ onChangeMonth, events, onClickDate, onClickEv
           onClick={() => onClickDate(`${selectedYear}-${(selectedMonth + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`)}>
           {event && (
             <ScheduleList>
-              {event.map((e: Event, index: number) => (
-                <li key={index} onClick={() => onClickEvent(e)}>{e.startTime + '~' + e.endTime}</li>
+              {event.map((ev: Event, index: number) => (
+                <li key={index} onClick={(e) => onClickEvent(e, ev)}>{ev.startTime + '~' + ev.endTime}</li>
               ))}
             </ScheduleList>
           )}

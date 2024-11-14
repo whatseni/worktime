@@ -7,12 +7,11 @@ import { ReturnCode } from "../utils/Code";
 // 월별 특정 사용자 근무 시간 조회
 export const getUserWorkTimesByMonth = async (req: Request, res: Response) => {
   try {
-    const { employeeName, employeePhone, selectMonth } = req.body;
-    const year = new Date().getFullYear();
+    const { employeeName, employeePhone, date } = req.body;
     // 선택된 월의 첫 번째 날
-    const startDate = new Date(`${year}-${selectMonth}-01`);
+    const startDate = new Date(date);
     // 다음 달의 첫 번째 날
-    const endDate = new Date(`${year}-${selectMonth}-01`);
+    const endDate = new Date(date);
     endDate.setMonth(endDate.getMonth() + 1);
 
     const workTimes = await Time.find({ employeeName: employeeName, employeePhone: employeePhone,
@@ -31,6 +30,7 @@ export const getUserWorkTimesByMonth = async (req: Request, res: Response) => {
     })
     res.status(200).json({code: ReturnCode.SUCCESS, data: returnResult});
   } catch (error) {
+    console.log(error)
     res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 };
@@ -39,12 +39,12 @@ export const getUserWorkTimesByMonth = async (req: Request, res: Response) => {
 // 월별 특정 회사 모든 사용자 근무 시간 조회
 export const getAllUsersTimeByCompanyAndMonth = async (req: Request, res: Response) => {
   try {
-    const { selectMonth, company } = req.body;
-    const year = new Date().getFullYear();
+    const { date, company } = req.body;
+
     // 선택된 월의 첫 번째 날
-    const startDate = new Date(`${year}-${selectMonth}-01`);
+    const startDate = new Date(date);
     // 다음 달의 첫 번째 날
-    const endDate = new Date(`${year}-${selectMonth}-01`);
+    const endDate = new Date(date);
     endDate.setMonth(endDate.getMonth() + 1);
 
     const workTimes = await Time.find({ company: company,
@@ -55,6 +55,7 @@ export const getAllUsersTimeByCompanyAndMonth = async (req: Request, res: Respon
      })
     res.status(200).json({code: ReturnCode.SUCCESS, data: workTimes});
   } catch (error) {
+    console.log(error)
     res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 }
@@ -76,12 +77,11 @@ export const getUserTimeBySpecificDate = async (req: Request, res: Response) => 
 // 근로자 특정 월 총 근무 시간
 export const getUserAllTimeByMonth = async (req: Request, res: Response) => {
   try {
-    const { employeeName, employeePhone, selectMonth } = req.body;
-    const year = new Date().getFullYear();
+    const { employeeName, employeePhone, date } = req.body;
     // 선택된 월의 첫 번째 날
-    const startDate = new Date(`${year}-${selectMonth}-01`);
+    const startDate = new Date(date);
     // 다음 달의 첫 번째 날
-    const endDate = new Date(`${year}-${selectMonth}-01`);
+    const endDate = new Date(date);
     endDate.setMonth(endDate.getMonth() + 1);
     const result = await Time.find({ employeeName: employeeName, employeePhone:employeePhone, workDate: {
       $gte: startDate,
@@ -98,28 +98,37 @@ export const getUserAllTimeByMonth = async (req: Request, res: Response) => {
       }})
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 }
 
-// 근무 시간 기록 생성
-export const createWorkTime = async (req: Request, res: Response) => {
-  try {
-    const { employeeName, employeePhone, workDate, startTime, endTime, company } = req.body;
-    const createTimeResult = new Time({ employeeName, employeePhone, workDate, startTime, endTime, company })
-    await createTimeResult.save();
-    res.status(200).json({ code: ReturnCode.SUCCESS, data: createTimeResult });
-  } catch (error) {
-    res.status(500).json({ code: ReturnCode.ERROR, message: error });
-  }
-};
-
-// 근무 시간 기록 수정
+// 근무 시간 기록 업데이트
 export const updateWorkTime = async (req: Request, res: Response) => {
   try {
     const { employeeName, employeePhone, workDate, startTime, endTime, company } = req.body;
-    const updateTimeResult = await Time.findOneAndUpdate({ employeeName, employeePhone, workDate, startTime, endTime, company })
-    res.status(200).json({ code: ReturnCode.SUCCESS, data: updateTimeResult });
+    let start = startTime.join(':');
+    let end = endTime.join(':');
+    // 타임 기록이 없다면 삽입 있다면 업데이트
+    const updateTimeResult = await Time.findOneAndUpdate(
+      {
+        employeeName: employeeName,
+        employeePhone: employeePhone,
+        workDate: new Date(workDate),
+        company: company,
+      },
+      {
+        $set: {
+          startTime: start,
+          endTime: end,
+        }
+      },
+      {
+        new: true,         // 업데이트된 문서를 반환
+        upsert: true        // 문서가 없으면 새로 추가
+      }
+    );
+    res.status(200).json({ code: ReturnCode.SUCCESS, data: updateTimeResult?.workDate });
   } catch (error) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
@@ -128,9 +137,9 @@ export const updateWorkTime = async (req: Request, res: Response) => {
 // 근무 시간 기록 삭제
 export const deleteWorkTime = async (req: Request, res: Response) => {
   try {
-    const { employeeName, employeePhone, workDate, startTime, endTime, company } = req.body;
-    const deleteTimeResult = await Time.findOneAndDelete({ employeeName, employeePhone, workDate, startTime, endTime, company })
-    res.status(200).json({ code: ReturnCode.SUCCESS, data: deleteTimeResult });
+    const { employeeName, employeePhone, workDate, company } = req.body;
+    const deleteTimeResult = await Time.findOneAndDelete({ employeeName, employeePhone, workDate, company })
+    res.status(200).json({ code: ReturnCode.SUCCESS, data: deleteTimeResult?.workDate });
   } catch (error) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }

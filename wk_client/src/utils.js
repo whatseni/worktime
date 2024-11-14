@@ -9,7 +9,7 @@ export const formatDate = (input) => {
   return formattedDate;
 }
 export const formatRequest = (year, month) => {
-  return `${year}-${month.padStart(2, '0')}`
+  return `${year}-${String(month).padStart(2, '0')}`
 }
 
 export const RetureCode = {

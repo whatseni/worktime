@@ -6,13 +6,19 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './store/store';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <Provider store={store}>
     <PersistGate persistor={persistor}>
       <App />
+      <ToastContainer
+        position="top-right" // 알람 위치 지정
+        autoClose={3000} // 자동 off 시간
+        rtl={false} // 알림 좌우 반전
+        theme="light" />
     </PersistGate>
   </Provider>
 

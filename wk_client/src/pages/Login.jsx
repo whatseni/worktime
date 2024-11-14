@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { login } from "../store/userSlice";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState(null);
@@ -34,11 +35,12 @@ export default function Login() {
         }
         window.localStorage.setItem("userInfo", JSON.stringify(obj));
         dispatch(login({ name: result.data.employeeName, phone: result.data.employeePhone, company: result.data.company }));
+        toast.success("로그인 성공!")
         navigate('/');
       }
     } catch (err) {
       console.error(err);
-      window.alert('접속 실패 다시 시도해주세요.')
+      toast.error('로그인 실패. 다시 시도해주세요.')
     }
   }
 
