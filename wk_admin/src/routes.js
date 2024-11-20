@@ -1,30 +1,33 @@
-import { Navigate, Outlet, useRoutes } from "react-router-dom";
-import Login from "./pages/Login";
-import Calendar from "./pages/Calendar";
+import { Navigate, useRoutes } from "react-router-dom";
+import MainLayout from "./layout/MainLayout";
+import OtherLayout from "./layout/OtherLayout";
+import sidebarConfig from './sidebarConfig/sidebarConfig';
+import sidebarEmployeeConfig from "./sidebarConfig/sidebarEmployeeConfig";
 
-import { Suspense } from "react";
-import MainLayout from "./layout";
-import Users from "./pages/Users";
 export default function Router() {
   return useRoutes([
     {
-      path: '/',
-      element: (
-        <MainLayout>
-          <Suspense>
-            <Outlet />
-          </Suspense>
-        </MainLayout>
-      ),
-      children: [
-        { element: <Navigate to="/calendar" replace /> },
-        { path: 'calendar', element: <Calendar />},
-        { path: 'users', element: <Users />}
-      ]
+      path: '/dashboard',
+      element: <MainLayout sidebarConfig={sidebarConfig} />,
+      // children: [
+      //   { path: 'calendar' },
+      //   { path: 'employee' },
+      // ]
     },
     {
-      path: 'login',
-      element: <Login/>
+      path: '/employee',
+      element: <MainLayout sidebarConfig={sidebarEmployeeConfig} />
     },
+    // {
+    //   path: '/',
+    //   element: <OtherLayout />,
+    //   children: [
+    //     { path: 'login' },
+    //     { path: '404' },
+    //     { path: '/dashboard', element: <Navigate to="/dashboard" /> },
+    //     { path: '*', element: <Navigate to="/404" /> }
+    //   ]
+    // },
+    // { path: '*', element: <Navigate to="/404" replace /> }
   ])
 }
