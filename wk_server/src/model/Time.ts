@@ -1,8 +1,8 @@
 import { model, Schema } from "mongoose";
 
 export interface IWorkTime extends Document {
-  employeeName: String;
-  employeePhone: String;
+  userName: String;
+  userPhone: String;
   workDate: Date;
   startTime: String;
   endTime: String;
@@ -10,8 +10,8 @@ export interface IWorkTime extends Document {
 }
 
 const timeSchema = new Schema<IWorkTime>({
-  employeeName: { type: String, required: true },
-  employeePhone: { type: String, required: true },
+  userName: { type: String, required: true },
+  userPhone: { type: String, required: true },
   workDate: { type: Date, required: true },
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },

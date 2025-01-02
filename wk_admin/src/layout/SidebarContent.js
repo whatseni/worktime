@@ -39,7 +39,7 @@ function NavItem({ item, active }) {
   const activeRootStyle = {
     color: '#00AB55',
     fontWeight: 'fontWeightMedium',
-    bgcolor: '#00AB55',
+    // bgcolor: '#00AB55',
     '&:before': { display: 'block' }
   };
 
