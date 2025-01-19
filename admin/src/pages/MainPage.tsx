@@ -1,29 +1,30 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { createTheme } from '@mui/material/styles';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import BarChartIcon from '@mui/icons-material/BarChart';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import TableChartIcon from '@mui/icons-material/TableChart';
+import PersonIcon from '@mui/icons-material/Person';
 import { AppProvider, type Navigation } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { useDemoRouter } from '@toolpad/core/internal';
+import CalendarComponent from '../components/CalendarComponent';
+import TableComponent from '../components/TableComponents';
+import UserComponent from '../components/UserComponent';
 
 const NAVIGATION: Navigation = [
   {
-    segment: 'dashboard',
-    title: 'Dashboard',
-    icon: <DashboardIcon />,
+    segment: 'calendar',
+    title: '달력으로 보기',
+    icon: <CalendarMonthIcon />,
   },
   {
-    segment: 'orders',
-    title: 'Orders',
-    icon: <ShoppingCartIcon />,
+    segment: 'table',
+    title: '표로 보기',
+    icon: <TableChartIcon />,
   },
   {
-    segment: 'reports',
-    title: 'Reports',
-    icon: <BarChartIcon />,
+    segment: 'users',
+    title: '사용자 관리',
+    icon: <PersonIcon />,
   },
 ];
 
@@ -45,24 +46,17 @@ const demoTheme = createTheme({
 
 function DemoPageContent({ pathname }: { pathname: string }) {
   return (
-    <Box
-      sx={{
-        py: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-      }}
-    >
-      <Typography>Dashboard content for {pathname}</Typography>
-    </Box>
+    <>
+      {pathname === "/calendar" && <CalendarComponent />}
+      {pathname === "/table" && <TableComponent />}
+      {pathname === "/users" && <UserComponent />}
+    </>
   );
 }
 
 export default function MainPage() {
 
-  const router = useDemoRouter('/dashboard');
-
+  const router = useDemoRouter('/calendar');
 
   return (
     <AppProvider

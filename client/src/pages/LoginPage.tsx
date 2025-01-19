@@ -1,7 +1,7 @@
 import { Button, TextField, Typography } from "@mui/material";
 import CommonLayout from "../components/CommonLayout";
 import { handleLogin } from "../utils/api";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CurrentUserContext } from "../context/userContext";
 import { toast } from "react-toastify";
@@ -10,18 +10,25 @@ export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [birth, setBirth] = useState<string | null>(null);
 
-  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser, setCurrentCompany, setCurrentPhone } = useContext(CurrentUserContext);
 
   const navigate = useNavigate();
 
   const onClickLoginButton = async () => {
     const data = await handleLogin({ phoneNumber, birth });
     if (data) {
-      setCurrentUser(data.userName)
-      toast.success("로그인 성공")
-      navigate("/")
+      setCurrentUser(data.userName);
+      setCurrentCompany(data.company);
+      setCurrentPhone(data.userPhone);
+      toast.success("로그인 성공");
+      navigate("/");
     }
   }
+
+  useEffect(() => {
+    if (!currentUser) navigate("/app");
+  }, []);
+
   return (
     <CommonLayout>
       <Typography sx={{
