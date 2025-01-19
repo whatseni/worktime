@@ -46,7 +46,7 @@ export default function Login() {
         //   navigate('/dashboard/calendar', { replace: true });
         // }
         setSession('test@email.com');
-          navigate('/dashboard/main', { replace: true });
+        navigate('/dashboard/main', { replace: true });
       } catch (e) {
         console.log(e);
         window.alert('로그인 실패');
@@ -77,7 +77,7 @@ export default function Login() {
                   error={Boolean(touched.email && errors.email)}
                   helperText={touched.email && errors.email}
                 />
-                <TextField 
+                <TextField
                   fullWidth
                   autoComplete="current-password"
                   type={showPassword ? 'text' : 'password'}
@@ -86,7 +86,7 @@ export default function Login() {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton  edge="end">
+                        <IconButton edge="end">
                           <Icon icon={showPassword ? eyeFill : eyeOffFill} />
                         </IconButton>
                       </InputAdornment>
@@ -95,17 +95,17 @@ export default function Login() {
                   error={Boolean(touched.password && errors.password)}
                   helperText={touched.password && errors.password}
                 />
-                 <LoadingButton
-                fullWidth
-                size="large"
-                type="submit"
-                variant="contained"
-                loading={isSubmitting}
-              >
-                Login
-              </LoadingButton>
+                <LoadingButton
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                  loading={isSubmitting}
+                >
+                  Login
+                </LoadingButton>
               </Stack>
-             
+
             </Form>
           </FormikProvider>
         </Box>

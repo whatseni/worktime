@@ -5,9 +5,6 @@
   "dependencies": {
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
-    "@fullcalendar/core": "^6.1.15",
-    "@fullcalendar/daygrid": "^6.1.15",
-    "@fullcalendar/react": "^6.1.15",
     "@iconify/icons-eva": "^1.2.6",
     "@iconify/icons-ic": "^1.2.13",
     "@iconify/react": "^5.0.2",
