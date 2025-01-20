@@ -4,9 +4,14 @@ export const getAllTime = (data: any) => {
     let [startHour, startMin] = obj.startTime.split(':').map(Number)
     let [endHour, endMin] = obj.endTime.split(':').map(Number)
 
-    totalTime += (endHour * 60 + endMin) - (startHour * 60 + startMin)
+    totalTime += (endHour * 60 + endMin) - (startHour * 60 + startMin) 
   }
-  return totalTime;
+  // 시간을 계산
+  const hours = Math.floor(totalTime / 60);
+
+  // 분을 계산
+  const minutes = totalTime % 60;
+  return `${hours}시간 ${minutes}분`;
 }
 export const getAllTimeByUser = (data: any) => {
   let result: any = {};
@@ -24,4 +29,26 @@ export const getAllTimeByUser = (data: any) => {
     }
   }
   return result;
+}
+
+// 시간 차이 계산 함수
+export function calculateTimeDifference(start: any, end: any) {
+  let [startHour, startMin] = start.split(':').map(Number)
+  let [endHour, endMin] = end.split(':').map(Number)
+
+  let diffTime =  (endHour * 60 + endMin) - (startHour * 60 + startMin)
+  // 시간을 계산
+  const hours = Math.floor(diffTime / 60);
+
+  // 분을 계산
+  const minutes = diffTime % 60;
+  return {hours, minutes};
+}
+
+export function combineDateAndTime(dateString: any, timeString: any): any {
+  const [hours, minutes] = timeString.split(":").map(Number);
+  const date = new Date(dateString);
+  
+  date.setUTCHours(hours, minutes, 0, 0);
+  return date;
 }

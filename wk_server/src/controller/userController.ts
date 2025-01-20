@@ -3,26 +3,13 @@ import User from "../model/User";
 import { Error } from "mongoose";
 import { ReturnCode } from "../utils/Code";
 
-// 생성
-export const createUser = async (req: Request, res: Response) => {
-  try {
-    const { userName, userPhone, userBirth, userCompany } = req.body;
-    const newuser = User.create({ userName, userPhone, userBirth, userCompany });
-
-    res.status(200).json({
-      code: ReturnCode.SUCCESS,
-      message: "user success save",
-      data: newuser
-    })
-  } catch (error:any) {
-    res.status(500).json({ code: ReturnCode.ERROR, message: error.message })
-  }
-}
-
 // 모든 근로자 조회
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const result = await User.find();
+    const { company } = req.body;
+    const result = await User.find({
+      userCompany: company
+    });
     res.status(200).json({
       code: ReturnCode.SUCCESS,
       message: "All users Success Find",
@@ -57,15 +44,35 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 }
 
+// 생성
+export const createUser = async (req: Request, res: Response) => {
+  try {
+    const { userName, userPhone, userBirth, userRole, userBank, userBankAccount, userCompany } = req.body;
+    const newuser = User.create({ userName, userPhone, userBirth, userCompany,userRole, userBank, userBankAccount });
+
+    res.status(200).json({
+      code: ReturnCode.SUCCESS,
+      message: "user success save",
+      data: newuser
+    })
+  } catch (error:any) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error.message })
+  }
+}
+
+
 // 특정 사용자 수정
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    const { userName, userPhone, userBirth, userCompany } = req.body;
+    const { userName, userPhone, userBirth, userRole, userBank, userBankAccount, userCompany } = req.body;
     const updateResult = await User.findOneAndUpdate({ userPhone: userPhone }, {
       userName: userName,
       userPhone: userPhone, 
-      userBirth: userBirth, 
-      userCompany: userCompany
+      userBirth: userBirth,
+      userCompany: userCompany,
+      userRole: userRole,
+      userBank: userBank,
+      userBankAccount: userBankAccount
     });
     if (updateResult) {
       res.status(200).json({

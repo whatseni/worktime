@@ -6,6 +6,11 @@ export interface UserInfoType {
   userPhone: string; // id
   userBirth: string; // pw
   userCompany: Company;
+  userRole: string;
+  userBank: string;
+  userBankAccount: string;
+  isWeek: boolean; // 주휴
+  isThree: boolean; // 3.3 적용
 }
 
 const userSchema = new Schema<UserInfoType>({
@@ -13,6 +18,11 @@ const userSchema = new Schema<UserInfoType>({
   userPhone: { type: String, required: true, unique: true},
   userBirth: { type: String, required: true},
   userCompany:  { type: String, required: true},
+  userRole:  { type: String, required: true},
+  userBank:  { type: String, required: true},
+  userBankAccount:  { type: String, required: true},
+  isWeek: { type: Boolean, required: true},
+  isThree: { type: Boolean, required: true},
 })
 
 const User = model<UserInfoType>("users", userSchema);

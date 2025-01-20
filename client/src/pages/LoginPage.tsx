@@ -26,7 +26,7 @@ export default function LoginPage() {
   }
 
   useEffect(() => {
-    if (!currentUser) navigate("/app");
+    if (currentUser) navigate("/app");
   }, []);
 
   return (

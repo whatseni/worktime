@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Time from "../model/Time";
-import { getAllTime, getAllTimeByUser } from "../utils/func";
+import { getAllTime, getAllTimeByUser, calculateTimeDifference, combineDateAndTime } from "../utils/func";
 import { ReturnCode } from "../utils/Code";
 
 // 특정 회사의 특정 근로자가 한달동안 근무한 데이터 조회
@@ -8,19 +8,29 @@ export const getTimeByMonth = async (req: Request, res: Response) => {
   try {
     const { userName, userPhone, date } = req.body;
     // 선택된 월의 첫 번째 날
-    const startDate = new Date(date);
+    const selectDate = new Date(date);
+    let startMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth(), 1));
     // 다음 달의 첫 번째 날
-    const endDate = new Date(date);
-    endDate.setMonth(endDate.getMonth() + 1);
+    let endMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth() + 1, 1));
 
     const result = await Time.find({ userName: userName, userPhone: userPhone,
       workDate: {
-        $gte: startDate,
-        $lt: endDate
+        $gte: startMonth,
+        $lt: endMonth
       }
-     }, { _id: false, workDate: true, startTime: true, endTime: true })
-
-    res.status(200).json({code: ReturnCode.SUCCESS, data: result});
+     }, { _id: true, workDate: true, startTime: true, endTime: true })
+     const transformedResult = result.map((entry) => {
+      const start = combineDateAndTime(entry.workDate, entry.startTime);
+      const end = combineDateAndTime(entry.workDate, entry.endTime);
+      const { hours, minutes } = calculateTimeDifference(entry.startTime, entry.endTime);
+      return {
+        id: entry._id,
+        title: `${hours}h ${minutes}m`,
+        start: start,
+        end: end
+      };
+    });
+    res.status(200).json({code: ReturnCode.SUCCESS, data: transformedResult});
   } catch (error) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
@@ -31,19 +41,29 @@ export const getAllUsersTimeByCompanyAndMonth = async (req: Request, res: Respon
   try {
     const { date, company } = req.body;
 
-    // 선택된 월의 첫 번째 날
-    const startDate = new Date(date);
+    const selectDate = new Date(date);
+    let startMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth(), 1));
     // 다음 달의 첫 번째 날
-    const endDate = new Date(date);
-    endDate.setMonth(endDate.getMonth() + 1);
+    let endMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth() + 1, 1));
 
     const result = await Time.find({ company: company,
       workDate: {
-        $gte: startDate,
-        $lt: endDate
+        $gte: startMonth,
+        $lt: endMonth
       }
-     })
-    res.status(200).json({code: ReturnCode.SUCCESS, data: result});
+     }, { _id: true, workDate: true, startTime: true, endTime: true })
+     const transformedResult = result.map((entry) => {
+      const start = combineDateAndTime(entry.workDate, entry.startTime);
+      const end = combineDateAndTime(entry.workDate, entry.endTime);
+      const { hours, minutes } = calculateTimeDifference(entry.startTime, entry.endTime);
+      return {
+        id: entry._id,
+        title: `${hours}h ${minutes}m`,
+        start: start,
+        end: end
+      };
+    });
+    res.status(200).json({code: ReturnCode.SUCCESS, data: transformedResult});
   } catch (error) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
@@ -68,13 +88,14 @@ export const getUserAllTimeByMonth = async (req: Request, res: Response) => {
   try {
     const { userName, userPhone, date } = req.body;
     // 선택된 월의 첫 번째 날
-    const startDate = new Date(date);
+    const selectDate = new Date(date);
+    let startMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth(), 1));
     // 다음 달의 첫 번째 날
-    const endDate = new Date(date);
-    endDate.setMonth(endDate.getMonth() + 1);
+    let endMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth() + 1, 1));
+
     const result = await Time.find({ userName: userName, userPhone:userPhone, workDate: {
-      $gte: startDate,
-      $lt: endDate
+      $gte: startMonth,
+      $lt: endMonth
     }})
     if (result) {
       const response = getAllTime(result)
@@ -95,8 +116,7 @@ export const getUserAllTimeByMonth = async (req: Request, res: Response) => {
 export const updateWorkTime = async (req: Request, res: Response) => {
   try {
     const { userName, userPhone, workDate, startTime, endTime, company } = req.body;
-    let start = startTime.join(':');
-    let end = endTime.join(':');
+
     // 타임 기록이 없다면 삽입 있다면 업데이트
     const updateTimeResult = await Time.findOneAndUpdate(
       {
@@ -107,8 +127,8 @@ export const updateWorkTime = async (req: Request, res: Response) => {
       },
       {
         $set: {
-          startTime: start,
-          endTime: end,
+          startTime: startTime,
+          endTime: endTime,
         }
       },
       {
@@ -116,6 +136,7 @@ export const updateWorkTime = async (req: Request, res: Response) => {
         upsert: false        // 문서가 없으면 새로 추가
       }
     );
+    console.log(updateTimeResult)
     res.status(200).json({ code: ReturnCode.SUCCESS, data: updateTimeResult?.workDate });
   } catch (error) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error });
@@ -142,16 +163,14 @@ export const deleteWorkTime = async (req: Request, res: Response) => {
 export const createWorkTime = async (req: Request, res: Response) => {
   try {
     const { userName, userPhone, workDate, startTime, endTime, company } = req.body;
-    let start = startTime.join(':');
-    let end = endTime.join(':');
 
     const result = await Time.create(
       {
         userName: userName,
         userPhone: userPhone,
         workDate: new Date(workDate),
-        startTime: start,
-        endTime: end,
+        startTime: startTime,
+        endTime: endTime,
         company: company,
       }
     );
@@ -161,31 +180,55 @@ export const createWorkTime = async (req: Request, res: Response) => {
   }
 }
 
-// 특정 회사의 모든 근로자의 한달 총 근로 시간 데이터 조회
 export const getAllUsersAllTimeByCompanyAndMonth = async (req: Request, res: Response) => {
   try {
     const { date, company } = req.body;
-    // 선택된 월의 첫 번째 날
-    const startDate = new Date(date);
-    // 다음 달의 첫 번째 날
-    const endDate = new Date(date);
-    endDate.setMonth(endDate.getMonth() + 1);
-    const result = await Time.find({ company: company, workDate: {
-      $gte: startDate,
-      $lt: endDate
-    }}, {
-      userName: true,
-      workDate: true,
-      startTime: true,
-      endTime: true,
-    })
+
+    // 선택된 월의 첫 번째 날과 다음 달의 첫 번째 날
+    const selectDate = new Date(date);
+    const startMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth(), 1));
+    const endMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth() + 1, 1));
+
+    // `Time` 모델과 `User` 모델 조인
+    const result = await Time.aggregate([
+      {
+        $match: {
+          company: company,
+          workDate: { $gte: startMonth, $lt: endMonth },
+        },
+      },
+      {
+        $lookup: {
+          from: "users", // User 컬렉션 이름 (소문자 및 복수형으로 설정)
+          localField: "userName", // Time 컬렉션에서 연결할 필드
+          foreignField: "userName", // User 컬렉션에서 연결할 필드
+          as: "userInfo", // 조인 결과를 저장할 필드
+        },
+      },
+      {
+        $unwind: "$userInfo", // 조인 결과를 평탄화
+      },
+      {
+        $project: {
+          userName: 1,
+          workDate: 1,
+          startTime: 1,
+          endTime: 1,
+          userRole: "$userInfo.userRole", // User의 userRole 추가
+        },
+      },
+    ]);
+
     if (result) {
-      const response = getAllTimeByUser(result)
-      res.status(200).json({code: ReturnCode.SUCCESS, data: {
-        time: response
-      }})
+      const response = getAllTimeByUser(result);
+      res.status(200).json({
+        code: ReturnCode.SUCCESS,
+        data: {
+          time: response,
+        },
+      });
     }
   } catch (error) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
-}
+};

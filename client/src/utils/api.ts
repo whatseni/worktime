@@ -1,6 +1,6 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 import {
+  AllTimeReturnTypes,
   LoginParamsTypes,
   LoginReturnTypes,
   TimeParamsTypes,
@@ -13,24 +13,20 @@ export const handleLogin = async ({
   birth,
 }: LoginParamsTypes): Promise<LoginReturnTypes | null> => {
   try {
-    // const result = await axios.post(
-    //   "http://localhost:5000/employee/login-employee",
-    //   {
-    //     employeePhone: phoneNumber,
-    //     employeeBirth: birth,
-    //   }
-    // );
+    const result = await axios.post(
+      "http://localhost:5000/user/login-user",
+      {
+        userPhone: phoneNumber,
+        userBirth: birth,
+      }
+    );
 
-    // if (result.data.code === "1") {
-    //   return result.data;
-    // }
-    return {
-      userName: "seeun",
-      userPhone: "01031909491",
-      company: "pb",
-    };
+    if (result.data.code === ReturnCode.SUCCESS) {
+      console.log(result.data.data)
+      return result.data.data;
+    }
   } catch (error) {
-    toast.error("로그인 실패. 다시 로그인해주세요");
+    console.error(error);
   }
 
   return null;
@@ -46,25 +42,25 @@ export const handleRegisterSchedule = async ({
   end,
 }: TimeParamsTypes): Promise<any | null> => {
   try {
-    // const response = await axios.post(
-    //   "http://localhost:5000/time/create-worktime",
-    //   {
-    //     userName: user,
-    //     userPhone: phone,
-    //     company: company,
-    //     workDate: date,
-    //     startTime: start,
-    //     endTime: end,
-    //   }
-    // );
-    // if (response.data.code === ReturnCode.SUCCESS) {
-    //   return {};
-    // }
+    const response = await axios.post(
+      "http://localhost:5000/time/create-worktime",
+      {
+        userName: user,
+        userPhone: phone,
+        company: company,
+        workDate: date,
+        startTime: start,
+        endTime: end,
+      }
+    );
+    if (response.data.code === ReturnCode.SUCCESS) {
+      return {};
+    }
     return {
       data: "ok",
     };
   } catch (error) {
-    toast.error("근무 등록/수정 실패. 다시 확인해주세요.");
+    console.error(error);
   }
   return null;
 };
@@ -79,25 +75,25 @@ export const handleUpdateSchedule = async ({
   end,
 }: TimeParamsTypes): Promise<any | null> => {
   try {
-    // const response = await axios.post(
-    //   "http://localhost:5000/time/update-worktime",
-    //   {
-    //     userName: user,
-    //     userPhone: phone,
-    //     company: company,
-    //     workDate: date,
-    //     startTime: start,
-    //     endTime: end,
-    //   }
-    // );
-    // if (response.data.code === ReturnCode.SUCCESS) {
-    //   return {};
-    // }
+    const response = await axios.post(
+      "http://localhost:5000/time/update-worktime",
+      {
+        userName: user,
+        userPhone: phone,
+        company: company,
+        workDate: date,
+        startTime: start,
+        endTime: end,
+      }
+    );
+    if (response.data.code === ReturnCode.SUCCESS) {
+      return {};
+    }
     return {
       data: "ok",
     };
   } catch (error) {
-    toast.error("근무 등록/수정 실패. 다시 확인해주세요.");
+    console.error(error);
   }
   return null;
 };
@@ -110,23 +106,23 @@ export const handleDeleteSchedule = async ({
   date,
 }: TimeParamsTypes): Promise<any | null> => {
   try {
-    // const response = await axios.post(
-    //   "http://localhost:5000/time/delete-worktime",
-    //   {
-    //     userName: user,
-    //     userPhone: phone,
-    //     company: company,
-    //     workDate: date,
-    //   }
-    // );
-    // if (response.data.code === ReturnCode.SUCCESS) {
-    //   return {};
-    // }
+    const response = await axios.post(
+      "http://localhost:5000/time/delete-worktime",
+      {
+        userName: user,
+        userPhone: phone,
+        company: company,
+        workDate: date,
+      }
+    );
+    if (response.data.code === ReturnCode.SUCCESS) {
+      return {};
+    }
     return {
       data: "ok",
     };
   } catch (error) {
-    toast.error("근무 등록/수정 실패. 다시 확인해주세요.");
+    console.error(error);
   }
   return null;
 };
@@ -143,20 +139,14 @@ export const handleGetScheduleByMonth = async ({
       {
         userName: user,
         userPhone: phone,
-        workDate: date,
+        date: date,
       }
     );
     if (response.data.code === ReturnCode.SUCCESS) {
-      return [
-        {
-          title: "test",
-          start: new Date(2025, 1, 15),
-          end: new Date(2025, 1, 15),
-        },
-      ];
+      return response.data.data;
     }
   } catch (error) {
-    toast.error("근무 등록/수정 실패. 다시 확인해주세요.");
+    console.error(error);
   }
   return null;
 };
@@ -166,21 +156,21 @@ export const handleGetAllTimeByMonth = async ({
   user,
   phone,
   date,
-}: TimeParamsTypes): Promise<any | null> => {
+}: TimeParamsTypes): Promise<string | null> => {
   try {
     const response = await axios.post(
       "http://localhost:5000/time/get-user-alltime-month",
       {
         userName: user,
         userPhone: phone,
-        workDate: date,
+        date: date,
       }
     );
     if (response.data.code === ReturnCode.SUCCESS) {
-      return {};
+      return response.data.data.allTime;
     }
   } catch (error) {
-    toast.error("근무 등록/수정 실패. 다시 확인해주세요.");
+    console.error(error);
   }
   return null;
 };
