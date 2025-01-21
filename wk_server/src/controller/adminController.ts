@@ -2,35 +2,46 @@ import { Request, Response } from "express";
 import Admin from "../model/Admin";
 import { ReturnCode } from "../utils/Code";
 import Time from "../model/Time";
-import { calculateTimeDifference, combineDateAndTime, getAllTimeByUser } from "../utils/func";
+import {
+  calculateTimeDifference,
+  combineDateAndTime,
+  getAllTimeByUser,
+} from "../utils/func";
 import User from "../model/User";
 
 export const loginAdmin = async (req: Request, res: Response) => {
   try {
     const { id, password } = req.body;
     // TODO :: password 암호화
-    const findOne = await Admin.findOne({ id: id, password: password })
+    const findOne = await Admin.findOne({ id: id, password: password });
     if (findOne) {
-      res.status(200).json({ 
+      res.status(200).json({
         code: ReturnCode.SUCCESS,
-        message: "Login Success"
-      })
+        message: "Login Success",
+      });
     } else {
-      throw new Error("Login Failed")
+      throw new Error("Login Failed");
     }
   } catch (error: any) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
   }
-}
+};
 
 // 특정 회사의 모든 근로자가 특정 월에 근무한 데이터 조회
-export const getAllUsersTimeByCompanyAndMonth = async (req: Request, res: Response) => {
+export const getAllUsersTimeByCompanyAndMonth = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const { date, company } = req.body;
 
     const selectDate = new Date(date);
-    const startMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth(), 1));
-    const endMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth() + 1, 1));
+    const startMonth = new Date(
+      Date.UTC(selectDate.getFullYear(), selectDate.getMonth(), 1)
+    );
+    const endMonth = new Date(
+      Date.UTC(selectDate.getFullYear(), selectDate.getMonth() + 1, 1)
+    );
 
     // MongoDB aggregate로 Time과 User 조인
     const result = await Time.aggregate([
@@ -60,7 +71,10 @@ export const getAllUsersTimeByCompanyAndMonth = async (req: Request, res: Respon
     const transformedResult = result.map((entry) => {
       const start = combineDateAndTime(entry.workDate, entry.startTime);
       const end = combineDateAndTime(entry.workDate, entry.endTime);
-      const { hours, minutes } = calculateTimeDifference(entry.startTime, entry.endTime);
+      const { hours, minutes } = calculateTimeDifference(
+        entry.startTime,
+        entry.endTime
+      );
       return {
         id: entry._id,
         title: `${entry.userInfo.userName} ${hours}h ${minutes}m`,
@@ -75,15 +89,21 @@ export const getAllUsersTimeByCompanyAndMonth = async (req: Request, res: Respon
   }
 };
 
-
-export const getAllUsersAllTimeByCompanyAndMonth = async (req: Request, res: Response) => {
+export const getAllUsersAllTimeByCompanyAndMonth = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const { date, company } = req.body;
 
     // 선택된 월의 첫 번째 날과 다음 달의 첫 번째 날
     const selectDate = new Date(date);
-    const startMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth(), 1));
-    const endMonth = new Date(Date.UTC(selectDate.getFullYear(), selectDate.getMonth() + 1, 1));
+    const startMonth = new Date(
+      Date.UTC(selectDate.getFullYear(), selectDate.getMonth(), 1)
+    );
+    const endMonth = new Date(
+      Date.UTC(selectDate.getFullYear(), selectDate.getMonth() + 1, 1)
+    );
 
     const result = await Time.aggregate([
       {
@@ -114,7 +134,12 @@ export const getAllUsersAllTimeByCompanyAndMonth = async (req: Request, res: Res
                 $dateFromString: {
                   dateString: {
                     $concat: [
-                      { $dateToString: { format: "%Y-%m-%d", date: "$workDate" } },
+                      {
+                        $dateToString: {
+                          format: "%Y-%m-%d",
+                          date: "$workDate",
+                        },
+                      },
                       "T",
                       "$endTime",
                       "Z",
@@ -126,7 +151,12 @@ export const getAllUsersAllTimeByCompanyAndMonth = async (req: Request, res: Res
                 $dateFromString: {
                   dateString: {
                     $concat: [
-                      { $dateToString: { format: "%Y-%m-%d", date: "$workDate" } },
+                      {
+                        $dateToString: {
+                          format: "%Y-%m-%d",
+                          date: "$workDate",
+                        },
+                      },
                       "T",
                       "$startTime",
                       "Z",
@@ -161,8 +191,6 @@ export const getAllUsersAllTimeByCompanyAndMonth = async (req: Request, res: Res
         },
       },
     ]);
-    
-    
 
     if (result) {
       // const response = getAllTimeByUser(result);
@@ -173,7 +201,7 @@ export const getAllUsersAllTimeByCompanyAndMonth = async (req: Request, res: Res
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ code: ReturnCode.ERROR, message: error });
   }
 };
@@ -181,62 +209,90 @@ export const getAllUsersAllTimeByCompanyAndMonth = async (req: Request, res: Res
 // 생성
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const { userName, userPhone, userBirth,isWeek, userRole, userBank, userBankAccount, userCompany } = req.body;
-    const newuser = User.create({ userName, userPhone, userBirth,isWeek, userCompany,userRole, userBank, userBankAccount });
+    const {
+      userName,
+      userPhone,
+      userBirth,
+      isWeek,
+      userRole,
+      userBank,
+      userBankAccount,
+      userCompany,
+    } = req.body;
+    const newuser = User.create({
+      userName,
+      userPhone,
+      userBirth,
+      isWeek,
+      userCompany,
+      userRole,
+      userBank,
+      userBankAccount,
+    });
 
     res.status(200).json({
       code: ReturnCode.SUCCESS,
       message: "user success save",
-      data: newuser
-    })
-  } catch (error:any) {
-    res.status(500).json({ code: ReturnCode.ERROR, message: error.message })
+      data: newuser,
+    });
+  } catch (error: any) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
   }
-}
-
+};
 
 // 특정 사용자 수정
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    const { userName, userPhone, userBirth, userRole,isWeek, userBank, userBankAccount, userCompany } = req.body;
-    const updateResult = await User.findOneAndUpdate({ userPhone: userPhone }, {
-      userName: userName,
-      userPhone: userPhone, 
-      userBirth: userBirth,
-      userCompany: userCompany,
-      isWeek: isWeek,
-      userRole: userRole,
-      userBank: userBank,
-      userBankAccount: userBankAccount
-    });
+    const {
+      userName,
+      userPhone,
+      userBirth,
+      userRole,
+      isWeek,
+      userBank,
+      userBankAccount,
+      userCompany,
+    } = req.body;
+    const updateResult = await User.findOneAndUpdate(
+      { userPhone: userPhone },
+      {
+        userName: userName,
+        userPhone: userPhone,
+        userBirth: userBirth,
+        userCompany: userCompany,
+        isWeek: isWeek,
+        userRole: userRole,
+        userBank: userBank,
+        userBankAccount: userBankAccount,
+      }
+    );
     if (updateResult) {
       res.status(200).json({
         code: ReturnCode.SUCCESS,
         message: "user success save",
-      })
+      });
     } else {
-      throw new Error("user Update Failed")
+      throw new Error("user Update Failed");
     }
-    
-  } catch (error:any) {
-    res.status(500).json({ code: ReturnCode.ERROR, message: error.message })
+  } catch (error: any) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
   }
-}
+};
 
 // 특정 사용자 삭제
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { userPhone } = req.body;
-    const deleteResult = await User.findOneAndDelete({ userPhone: userPhone })
+    const deleteResult = await User.findOneAndDelete({ userPhone: userPhone });
     if (deleteResult) {
       res.status(200).json({
         code: ReturnCode.SUCCESS,
         message: "user delete save",
-      })
+      });
     } else {
-      throw new Error("user Update Failed")
+      throw new Error("user Update Failed");
     }
-  } catch (error:any) {
-    res.status(500).json({ code: ReturnCode.ERROR, message: error.message })
+  } catch (error: any) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
   }
-}
+};

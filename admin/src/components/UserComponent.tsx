@@ -1,5 +1,5 @@
 
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Card, Checkbox, Button, Box} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Card, Checkbox, Button, Box } from '@mui/material';
 import UserToolbar from './user/UserToolbar';
 import { Fragment, useEffect, useState } from 'react';
 import UserModal from './user/UserModal';
@@ -21,7 +21,7 @@ export default function UserComponent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await handleGetAllUser({ company: 'PB'})
+        const result = await handleGetAllUser({ company: 'PB' })
         if (result) {
           setUsersData(result)
         }
@@ -29,22 +29,22 @@ export default function UserComponent() {
         toast.error("데이터를 불러오는 중 문제가 발생했습니다.");
       }
     };
-    
+
     fetchData();
   }, [])
 
   return (
     <Fragment>
-      <Card sx={{ margin: "20px"}}>
-        <UserModal open={modalOpen} setOpen={setModalOpen} userData={selectUser}/>
-        <UserToolbar numSelected={selected}/>
+      <Card sx={{ margin: "20px" }}>
+        <UserModal open={modalOpen} setOpen={setModalOpen} userData={selectUser} setSelectUser={setSelectUser} />
+        <UserToolbar numSelected={selected} />
         <TableContainer>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-              <TableCell padding="checkbox">
-                    <Checkbox/>
-                  </TableCell>
+                <TableCell padding="checkbox">
+                  <Checkbox />
+                </TableCell>
                 <TableCell>이름</TableCell>
                 <TableCell>시간대</TableCell>
                 <TableCell>주휴 수당 여부</TableCell>
@@ -64,7 +64,7 @@ export default function UserComponent() {
                     <TableCell onClick={() => handleClickUser(data)}>{data.userName}</TableCell>
                     <TableCell>{data.userRole}</TableCell>
                     <TableCell>
-                      <Checkbox checked={data.isWeek}/>
+                      <Checkbox checked={data.isWeek} />
                     </TableCell>
                     <TableCell>{data.userPhone}</TableCell>
                     <TableCell>{data.userBirth}</TableCell>
@@ -76,10 +76,10 @@ export default function UserComponent() {
             </TableBody>
           </Table>
         </TableContainer>
-    </Card>
-    <Box sx={{ display: "flex", justifyContent: "flex-end", marginRight: "20px"}}>
-      <Button variant='contained' onClick={() => setModalOpen(true)}>추가하기</Button>
-    </Box>
+      </Card>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", marginRight: "20px" }}>
+        <Button variant='contained' onClick={() => setModalOpen(true)}>추가하기</Button>
+      </Box>
     </Fragment>
   );
 }
