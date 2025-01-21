@@ -1,4 +1,7 @@
 import axios from "axios";
+import { ReturnCode } from "../types/ReturnCode";
+import { GetAllUserParmsType } from "../types/apiPayload";
+import { Event } from "react-big-calendar";
 
 export const handleLogin = async () => {
   try {
@@ -9,24 +12,27 @@ export const handleLogin = async () => {
 };
 
 export const handleCreateUser = async ({
-  username,
-  userrole,
+  userName,
+  userRole,
+  isWeek,
   userPhone,
   userBirth,
   bank,
-  bankaccount,
+  bankAccount,
   company,
 }: any) => {
   try {
-    const result = await axios.post("http://localhost:5000/user/create-user", {
-      userName: username,
+    const result = await axios.post("http://localhost:5000/admin/create-user", {
+      userName: userName,
       userPhone: userPhone,
       userBirth: userBirth,
-      userRole: userrole,
+      userRole: userRole,
+      isWeek: isWeek,
       userBank: bank,
-      userBankAccount: bankaccount,
-      userCompany: company,
+      userBankAccount: bankAccount,
+      userCompany: "PB",
     });
+    console.log(result)
   } catch (error) {
     console.log(error);
   }
@@ -68,37 +74,41 @@ export const handleDeleteUser = async ({ userPhone }: any) => {
 
 export const handleGetAllUser = async ({ company }: any) => {
   try {
-    const result = await axios.post("http://localhost:5000/user/get-alluser", {
+    const response = await axios.post("http://localhost:5000/admin/get-alluser-info", {
       company: company,
     });
+    if (response.data.code === ReturnCode.SUCCESS) return response.data.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const handleGetAllUserTimeMonth = async ({ date, company }: any) => {
+export const handleGetAllUserTimeMonth = async ({ date, company }: GetAllUserParmsType): Promise<Event[] | null> => {
   try {
-    const result = await axios.post(
-      "http://localhost:5000/time/get-alluser-time-month",
+    const response = await axios.post(
+      "http://localhost:5000/admin/get-alluser-time-month",
       {
         date: date,
         company: company,
       }
     );
+    if (response.data.code === ReturnCode.SUCCESS) return response.data.data;
   } catch (error) {
     console.log(error);
   }
+  return null;
 };
 
-export const handleGetAllUserAllTimeMonth = async ({ date, company }: any) => {
+export const handleGetAllUserAllTimeMonth = async ({ date, company }: GetAllUserParmsType) => {
   try {
-    const result = await axios.post(
-      "http://localhost:5000/time/get-alluser-alltime-month",
+    const response = await axios.post(
+      "http://localhost:5000/admin/get-alluser-alltime-month",
       {
         date: date,
         company: company,
       }
     );
+    if (response.data.code === ReturnCode.SUCCESS) return response.data.data;
   } catch (error) {
     console.log(error);
   }
@@ -107,18 +117,72 @@ export const handleGetAllUserAllTimeMonth = async ({ date, company }: any) => {
 export const handleRegisterSchedule = async ({
   userName,
   userCompany,
+  userPhone,
   date,
-  startTime,
-  endTime,
+  start,
+  end,
 }: any) => {
   try {
-    const result = await axios.post(
+    const response = await axios.post(
       "http://localhost:5000/time/create-worktime",
       {
-        date: date,
+        userName: userName,
+        userPhone: userPhone,
+        company: userCompany,
+        workDate: date,
+        startTime: start,
+        endTime: end
       }
     );
+    if (response.data.code === ReturnCode.SUCCESS) {
+      return ReturnCode.SUCCESS;
+    }
   } catch (error) {
     console.error(error);
   }
+};
+
+// 시간 수정
+export const handleUpdateSchedule = async ({
+  id,
+  date,
+  start,
+  end,
+}: any): Promise<any | null> => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/time/update-worktime",
+      {
+        id: id,
+        workDate: date,
+        startTime: start,
+        endTime: end,
+      }
+    );
+    if (response.data.code === ReturnCode.SUCCESS) {
+      return ReturnCode.SUCCESS;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  return null;
+};
+
+// 시간 삭제
+export const handleDeleteSchedule = async ({id
+}: any): Promise<any | null> => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/time/delete-worktime",
+      {
+        id: id
+      }
+    );
+    if (response.data.code === ReturnCode.SUCCESS) {
+      return ReturnCode.SUCCESS;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  return null;
 };

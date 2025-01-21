@@ -67,20 +67,16 @@ export const handleRegisterSchedule = async ({
 
 // 시간 수정
 export const handleUpdateSchedule = async ({
-  user,
-  phone,
-  company,
+  id,
   date,
   start,
   end,
-}: TimeParamsTypes): Promise<any | null> => {
+}: any): Promise<any | null> => {
   try {
     const response = await axios.post(
       "http://localhost:5000/time/update-worktime",
       {
-        userName: user,
-        userPhone: phone,
-        company: company,
+        id: id,
         workDate: date,
         startTime: start,
         endTime: end,
@@ -99,20 +95,13 @@ export const handleUpdateSchedule = async ({
 };
 
 // 시간 삭제
-export const handleDeleteSchedule = async ({
-  user,
-  phone,
-  company,
-  date,
-}: TimeParamsTypes): Promise<any | null> => {
+export const handleDeleteSchedule = async ({id
+}: any): Promise<any | null> => {
   try {
     const response = await axios.post(
       "http://localhost:5000/time/delete-worktime",
       {
-        userName: user,
-        userPhone: phone,
-        company: company,
-        workDate: date,
+        id: id
       }
     );
     if (response.data.code === ReturnCode.SUCCESS) {

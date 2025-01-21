@@ -19,6 +19,8 @@ export default function CalendarComponent() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [defaultStart, setDefaultStart] = useState<any>();
   const [defaultEnd, setDefaultEnd] = useState<any>();
+  const [selectEventId, setSelectEventId] = useState<string>("");
+
   const { currentUser, currentPhone } = useContext(CurrentUserContext);
 
   const { defaultDate, views } = useMemo(() => {
@@ -31,11 +33,12 @@ export default function CalendarComponent() {
 
   const onNavigate = useCallback((newDate: SetStateAction<Date>) => setDate(newDate), [setDate])
 
-  const onSelectEvent = useCallback((calEvent: Event) => {
+  const onSelectEvent = useCallback((calEvent: any) => {
     if (calEvent) {
       setDefaultStart(calEvent.start)
       setDefaultEnd(calEvent.end)
       setModalOpen(true)
+      setSelectEventId(calEvent.id)
     }
   }, [])
 
@@ -77,7 +80,7 @@ export default function CalendarComponent() {
       height: "80vh",
       width: "90vw"
     }} >
-      <ScheduleModal open={modalOpen} setOpen={setModalOpen} defaultStart={defaultStart} defaultEnd={defaultEnd}/>
+      <ScheduleModal open={modalOpen} setOpen={setModalOpen} defaultStart={defaultStart} defaultEnd={defaultEnd} selectEventId={selectEventId}/>
       <Calendar defaultDate={defaultDate} views={views} events={events} onNavigate={onNavigate} date={date} onSelectEvent={onSelectEvent} />
       <Box display="flex" flexDirection="row" justifyContent="center" width="100%">
         <Typography variant="h5">이번 달 총 시간 : {allTime}</Typography>

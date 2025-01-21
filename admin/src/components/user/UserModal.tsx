@@ -1,25 +1,28 @@
-import { Button, Dialog, DialogContent, DialogContentText, DialogTitle, Stack, TextField } from "@mui/material";
+import { Button, Dialog, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Stack, Switch, TextField } from "@mui/material";
 import { z } from 'zod';
 import { Field, Form, Formik, FormikHelpers, FieldArray } from 'formik';
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import { handleCreateUser } from "../../utils/api";
 
 const FormValidator = z.object({
-  username: z.string(),
-  userrole: z.string(),
+  userName: z.string(),
+  userRole: z.string(),
+  isWeek: z.boolean(),
   userPhone: z.string(),
   userBirth: z.string(),
   bank: z.string(),
-  bankaccount: z.string()
+  bankAccount: z.string()
 })
 type FormStructure = z.infer<typeof FormValidator>;
 
 const initialValues: FormStructure = {
-  username: "",
-  userrole: "",
+  userName: "",
+  userRole: "",
+  isWeek: false,
   userPhone: "",
   userBirth: "",
   bank: "",
-  bankaccount: ""
+  bankAccount: ""
 }
 
 const validator = toFormikValidationSchema(FormValidator);
@@ -27,6 +30,7 @@ const validator = toFormikValidationSchema(FormValidator);
 type OnSubmitCB<T> = (values: T, helpers: FormikHelpers<T>) => void;
 const onSubmit: OnSubmitCB<typeof initialValues> = (values, { resetForm }) => {
   console.log(values);
+  handleCreateUser({...values})
   resetForm();
 };
 
@@ -34,14 +38,15 @@ const onSubmit: OnSubmitCB<typeof initialValues> = (values, { resetForm }) => {
 interface ModalProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  userData: any;
 }
-export default function UserModal({ open, setOpen }: ModalProps) {
+export default function UserModal({ open, setOpen, userData }: ModalProps) {
   return (
-    <Dialog open={false}>
+    <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogTitle>정보</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ width: "400px"}}>
         <DialogContentText>
-          사용자 정보
+          사용자 정보 {userData ? "수정" : "삭제"}
         </DialogContentText>
         <br/>
         <Formik onSubmit={onSubmit}
@@ -54,26 +59,40 @@ export default function UserModal({ open, setOpen }: ModalProps) {
                 <TextField
                   fullWidth
                   autoComplete="사용자 이름"
-                  type="username"
+                  type="userName"
                   label="사용자 이름"
-                  {...getFieldProps('username')}
-                  error={Boolean(touched.username && errors.username)}
-                  helperText={touched.username && errors.username}
+                  defaultValue={userData && userData.userName}
+                  {...getFieldProps('userName')}
+                  error={Boolean(touched.userName && errors.userName)}
+                  helperText={touched.userName && errors.userName}
                 />
                 <TextField
                   fullWidth
                   autoComplete="시간대"
-                  type="userrole"
+                  type="userRole"
                   label="시간대"
-                  {...getFieldProps('userrole')}
-                  error={Boolean(touched.userrole && errors.userrole)}
-                  helperText={touched.userrole && errors.userrole}
+                  defaultValue={userData && userData.userName}
+                  {...getFieldProps('userRole')}
+                  error={Boolean(touched.userRole && errors.userRole)}
+                  helperText={touched.userRole && errors.userRole}
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                    defaultChecked={userData && userData.isWeek}
+                      checked={getFieldProps("isWeek").value}
+                      {...getFieldProps("isWeek")}
+                      color="primary"
+                    />
+                  }
+                  label="주휴 여부"
                 />
                 <TextField
                   fullWidth
                   autoComplete="전화번호"
                   type="userPhone"
                   label="전화번호"
+                  defaultValue={userData && userData.userPhone}
                   {...getFieldProps('userPhone')}
                   error={Boolean(touched.userPhone && errors.userPhone)}
                   helperText={touched.userPhone && errors.userPhone}
@@ -83,6 +102,7 @@ export default function UserModal({ open, setOpen }: ModalProps) {
                   autoComplete="생년월일"
                   type="userBirth"
                   label="생년월일"
+                  defaultValue={userData && userData.userBirth}
                   {...getFieldProps('userBirth')}
                   error={Boolean(touched.userBirth && errors.userBirth)}
                   helperText={touched.userBirth && errors.userBirth}
@@ -92,6 +112,7 @@ export default function UserModal({ open, setOpen }: ModalProps) {
                   autoComplete="거래은행"
                   type="bank"
                   label="거래은행"
+                  defaultValue={userData && userData.userBank}
                   {...getFieldProps('bank')}
                   error={Boolean(touched.bank && errors.bank)}
                   helperText={touched.bank && errors.bank}
@@ -99,11 +120,12 @@ export default function UserModal({ open, setOpen }: ModalProps) {
                 <TextField
                   fullWidth
                   autoComplete="계좌번호"
-                  type="bankaccount"
+                  type="bankAccount"
                   label="계좌번호"
-                  {...getFieldProps('bankaccount')}
-                  error={Boolean(touched.bankaccount && errors.bankaccount)}
-                  helperText={touched.bankaccount && errors.bankaccount}
+                  defaultValue={userData && userData.userBankAccount}
+                  {...getFieldProps('bankAccount')}
+                  error={Boolean(touched.bankAccount && errors.bankAccount)}
+                  helperText={touched.bankAccount && errors.bankAccount}
                 />
                 </Stack>
                 <br/>

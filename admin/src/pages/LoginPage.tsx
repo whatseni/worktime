@@ -4,7 +4,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useState } from "react";
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   return (
     <Card sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
       <CardContent sx={{ display: "grid", gap: "10px", width: "500px" }}>

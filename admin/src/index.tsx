@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -10,6 +12,12 @@ const root = ReactDOM.createRoot(
 root.render(
   <BrowserRouter>
     <App />
+    <ToastContainer
+        position="top-right" // 알람 위치 지정
+        autoClose={3000} // 자동 off 시간
+        rtl={false} // 알림 좌우 반전
+        theme="light"
+      />
   </BrowserRouter>
 );
 
