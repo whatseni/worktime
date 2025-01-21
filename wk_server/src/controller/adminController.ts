@@ -206,12 +206,12 @@ export const getAllUsersAllTimeByCompanyAndMonth = async (
   }
 };
 
-// 생성
-export const createUser = async (req: Request, res: Response) => {
+// 생성 또는 삭제
+export const createOrUpdateUser = async (req: Request, res: Response) => {
   try {
     const {
+      userPhone, // 고유 필드, 사용자 식별
       userName,
-      userPhone,
       userBirth,
       isWeek,
       userRole,
@@ -219,61 +219,32 @@ export const createUser = async (req: Request, res: Response) => {
       userBankAccount,
       userCompany,
     } = req.body;
-    const newuser = User.create({
-      userName,
-      userPhone,
-      userBirth,
-      isWeek,
-      userCompany,
-      userRole,
-      userBank,
-      userBankAccount,
-    });
+
+    // `findOneAndUpdate`와 `upsert` 옵션 사용
+    const user = await User.findOneAndUpdate(
+      { userPhone }, // 조건: userPhone 기준으로 사용자 검색
+      {
+        $set: {
+          userName,
+          userBirth,
+          isWeek,
+          userRole,
+          userBank,
+          userBankAccount,
+          userCompany,
+        },
+      },
+      {
+        new: true, // 업데이트된 문서를 반환
+        upsert: true, // 없으면 새로 생성
+      }
+    );
 
     res.status(200).json({
       code: ReturnCode.SUCCESS,
-      message: "user success save",
-      data: newuser,
+      message: user ? "User updated successfully" : "User created successfully",
+      data: user,
     });
-  } catch (error: any) {
-    res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
-  }
-};
-
-// 특정 사용자 수정
-export const updateUser = async (req: Request, res: Response) => {
-  try {
-    const {
-      userName,
-      userPhone,
-      userBirth,
-      userRole,
-      isWeek,
-      userBank,
-      userBankAccount,
-      userCompany,
-    } = req.body;
-    const updateResult = await User.findOneAndUpdate(
-      { userPhone: userPhone },
-      {
-        userName: userName,
-        userPhone: userPhone,
-        userBirth: userBirth,
-        userCompany: userCompany,
-        isWeek: isWeek,
-        userRole: userRole,
-        userBank: userBank,
-        userBankAccount: userBankAccount,
-      }
-    );
-    if (updateResult) {
-      res.status(200).json({
-        code: ReturnCode.SUCCESS,
-        message: "user success save",
-      });
-    } else {
-      throw new Error("user Update Failed");
-    }
   } catch (error: any) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
   }

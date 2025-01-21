@@ -1,9 +1,10 @@
 import { Button, Dialog, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Stack, Switch, TextField } from "@mui/material";
 import { z } from 'zod';
-import { Field, Form, Formik, FormikHelpers, FieldArray } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { handleCreateUser } from "../../utils/api";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { handleCreateOrUpdateUser } from "../../utils/api";
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
+import { CurrentAdminContext } from "../context/adminContext";
 
 const FormValidator = z.object({
   userName: z.string(),
@@ -39,6 +40,7 @@ interface ModalProps {
 }
 export default function UserModal({ open, setOpen, userData, setSelectUser }: ModalProps) {
 
+  const { currentCompany } = useContext(CurrentAdminContext);
   const [initialValues, setInitialValues] = useState<FormStructure>(defaultValues);
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function UserModal({ open, setOpen, userData, setSelectUser }: Mo
   const onSubmit: OnSubmitCB<typeof defaultValues> = (values, { resetForm }) => {
     console.log(values);
     setSelectUser(null);
-    handleCreateUser({ ...values })
+    handleCreateOrUpdateUser({ ...values })
     resetForm();
     handleClose();
   };

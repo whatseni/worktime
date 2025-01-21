@@ -1,20 +1,22 @@
 import { Router } from "express";
-import { createUser, deleteUser, getAllUsersAllTimeByCompanyAndMonth, getAllUsersTimeByCompanyAndMonth, loginAdmin, updateUser } from "../controller/adminController";
 import {
-  getAllUsers,
-  getAllUsersName,
-} from "../controller/userController";
+  createOrUpdateUser,
+  deleteUser,
+  getAllUsersAllTimeByCompanyAndMonth,
+  getAllUsersTimeByCompanyAndMonth,
+  loginAdmin,
+} from "../controller/adminController";
+import { getAllUsers, getAllUsersName } from "../controller/userController";
 
 const adminRouter = Router();
 
 adminRouter.post("/login-admin", loginAdmin);
 
 // 유저 관련
-adminRouter.post("/update-user", updateUser);
 adminRouter.post("/delete-user", deleteUser);
 adminRouter.post("/get-alluser-info", getAllUsers);
 adminRouter.post("/get-alluser-name", getAllUsersName);
-adminRouter.post("/create-user", createUser);
+adminRouter.post("/create-or-update-user", createOrUpdateUser);
 
 // 타임 관련
 // 특정 회사의 모든 근로자가 특정 월에 근무한 데이터 조회

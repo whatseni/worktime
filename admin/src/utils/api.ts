@@ -11,52 +11,31 @@ export const handleLogin = async () => {
   }
 };
 
-export const handleCreateUser = async ({
+export const handleCreateOrUpdateUser = async ({
   userName,
   userRole,
   isWeek,
   userPhone,
   userBirth,
-  bank,
-  bankAccount,
+  userBank,
+  userBankAccount,
   company,
 }: any) => {
   try {
-    const result = await axios.post("http://localhost:5000/admin/create-user", {
-      userName: userName,
-      userPhone: userPhone,
-      userBirth: userBirth,
-      userRole: userRole,
-      isWeek: isWeek,
-      userBank: bank,
-      userBankAccount: bankAccount,
-      userCompany: "PB",
-    });
-    console.log(result)
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const handleUpdateUser = async ({
-  username,
-  userrole,
-  userPhone,
-  userBirth,
-  bank,
-  bankaccount,
-  company,
-}: any) => {
-  try {
-    const result = await axios.post("http://localhost:5000/user/update-user", {
-      userName: username,
-      userPhone: userPhone,
-      userBirth: userBirth,
-      userRole: userrole,
-      userBank: bank,
-      userBankAccount: bankaccount,
-      userCompany: company,
-    });
+    const result = await axios.post(
+      "http://localhost:5000/admin/create-or-update-user",
+      {
+        userName: userName,
+        userPhone: userPhone,
+        userBirth: userBirth,
+        userRole: userRole,
+        isWeek: isWeek,
+        userBank: userBank,
+        userBankAccount: userBankAccount,
+        userCompany: "PB",
+      }
+    );
+    console.log(result);
   } catch (error) {
     console.log(error);
   }
@@ -74,16 +53,22 @@ export const handleDeleteUser = async ({ userPhone }: any) => {
 
 export const handleGetAllUser = async ({ company }: any) => {
   try {
-    const response = await axios.post("http://localhost:5000/admin/get-alluser-info", {
-      company: company,
-    });
+    const response = await axios.post(
+      "http://localhost:5000/admin/get-alluser-info",
+      {
+        company: company,
+      }
+    );
     if (response.data.code === ReturnCode.SUCCESS) return response.data.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const handleGetAllUserTimeMonth = async ({ date, company }: GetAllUserParmsType): Promise<Event[] | null> => {
+export const handleGetAllUserTimeMonth = async ({
+  date,
+  company,
+}: GetAllUserParmsType): Promise<Event[] | null> => {
   try {
     const response = await axios.post(
       "http://localhost:5000/admin/get-alluser-time-month",
@@ -99,7 +84,10 @@ export const handleGetAllUserTimeMonth = async ({ date, company }: GetAllUserPar
   return null;
 };
 
-export const handleGetAllUserAllTimeMonth = async ({ date, company }: GetAllUserParmsType) => {
+export const handleGetAllUserAllTimeMonth = async ({
+  date,
+  company,
+}: GetAllUserParmsType) => {
   try {
     const response = await axios.post(
       "http://localhost:5000/admin/get-alluser-alltime-month",
@@ -131,7 +119,7 @@ export const handleRegisterSchedule = async ({
         company: userCompany,
         workDate: date,
         startTime: start,
-        endTime: end
+        endTime: end,
       }
     );
     if (response.data.code === ReturnCode.SUCCESS) {
@@ -169,13 +157,14 @@ export const handleUpdateSchedule = async ({
 };
 
 // 시간 삭제
-export const handleDeleteSchedule = async ({id
+export const handleDeleteSchedule = async ({
+  id,
 }: any): Promise<any | null> => {
   try {
     const response = await axios.post(
       "http://localhost:5000/time/delete-worktime",
       {
-        id: id
+        id: id,
       }
     );
     if (response.data.code === ReturnCode.SUCCESS) {
