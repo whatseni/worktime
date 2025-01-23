@@ -8,19 +8,24 @@ import {
   getAllTimeByUser,
 } from "../utils/func";
 import User from "../model/User";
+import { compare, hash } from "bcrypt";
 
+const saltRounds = 12;
 export const loginAdmin = async (req: Request, res: Response) => {
   try {
     const { id, password } = req.body;
-    // TODO :: password 암호화
-    const findOne = await Admin.findOne({ id: id, password: password });
-    if (findOne) {
-      res.status(200).json({
-        code: ReturnCode.SUCCESS,
-        message: "Login Success",
-      });
+    const user = await Admin.findOne({ id: id });
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    const match = await compare(password, user.password);
+    if (match) {
+      res.status(200).json({ code: ReturnCode.SUCCESS, data: {
+        id: user.id,
+        company: user.company
+      } });
     } else {
-      throw new Error("Login Failed");
+      res.status(401).json({ code: ReturnCode.SUCCESS, data: match });
     }
   } catch (error: any) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
@@ -206,7 +211,7 @@ export const getAllUsersAllTimeByCompanyAndMonth = async (
   }
 };
 
-// 생성 또는 삭제
+// 생성 또는 수정
 export const createOrUpdateUser = async (req: Request, res: Response) => {
   try {
     const {
@@ -218,11 +223,12 @@ export const createOrUpdateUser = async (req: Request, res: Response) => {
       userBank,
       userBankAccount,
       userCompany,
+      id
     } = req.body;
 
     // `findOneAndUpdate`와 `upsert` 옵션 사용
     const user = await User.findOneAndUpdate(
-      { userPhone }, // 조건: userPhone 기준으로 사용자 검색
+      { _id: id }, // 조건: userPhone 기준으로 사용자 검색
       {
         $set: {
           userName,
@@ -251,19 +257,33 @@ export const createOrUpdateUser = async (req: Request, res: Response) => {
 };
 
 // 특정 사용자 삭제
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUsers = async (req: Request, res: Response) => {
   try {
-    const { userPhone } = req.body;
-    const deleteResult = await User.findOneAndDelete({ userPhone: userPhone });
-    if (deleteResult) {
+    const { selected } = req.body; // selected 배열: 삭제할 사용자들의 _id 값
+
+    if (!Array.isArray(selected) || selected.length === 0) {
+      return res.status(400).json({
+        code: ReturnCode.ERROR,
+        message: "Invalid input: 'selected' should be a non-empty array.",
+      });
+    }
+
+    // MongoDB의 $in 연산자를 사용해 배열의 모든 _id에 해당하는 문서 삭제
+    const deleteResult = await User.deleteMany({ _id: { $in: selected } });
+
+    if (deleteResult.deletedCount > 0) {
       res.status(200).json({
         code: ReturnCode.SUCCESS,
-        message: "user delete save",
+        message: `${deleteResult.deletedCount} users deleted successfully.`,
       });
     } else {
-      throw new Error("user Update Failed");
+      res.status(404).json({
+        code: ReturnCode.ERROR,
+        message: "No users found for deletion.",
+      });
     }
   } catch (error: any) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
   }
 };
+

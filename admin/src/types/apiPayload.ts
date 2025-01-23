@@ -27,3 +27,22 @@ export interface UserListType {
   userName: string;
   userPhone: string;
 }
+
+export interface TimesDataType {
+  userId: string;
+  userName: string;
+  userRole: string;
+  totalHours: number;
+  totalMinutes: number;
+}
+
+export interface UsersDataType {
+  _id: string;
+  userName: string;
+  userRole: string;
+  isWeek: boolean;
+  userPhone: string;
+  userBirth: string;
+  userBank: string;
+  userBankAccount: string;
+}

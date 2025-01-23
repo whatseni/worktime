@@ -5,6 +5,7 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { handleCreateOrUpdateUser } from "../../utils/api";
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { CurrentAdminContext } from "../context/adminContext";
+import { UsersDataType } from "../../types/apiPayload";
 
 const FormValidator = z.object({
   userName: z.string(),
@@ -35,7 +36,7 @@ type OnSubmitCB<T> = (values: T, helpers: FormikHelpers<T>) => void;
 interface ModalProps {
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
-  userData: any | null;
+  userData: UsersDataType | null;
   setSelectUser: Dispatch<SetStateAction<any>>;
 }
 export default function UserModal({ open, setOpen, userData, setSelectUser }: ModalProps) {
@@ -52,9 +53,8 @@ export default function UserModal({ open, setOpen, userData, setSelectUser }: Mo
   }, [userData, open]);
 
   const onSubmit: OnSubmitCB<typeof defaultValues> = (values, { resetForm }) => {
-    console.log(values);
     setSelectUser(null);
-    handleCreateOrUpdateUser({ ...values })
+    handleCreateOrUpdateUser({ ...values, id: userData?._id })
     resetForm();
     handleClose();
   };

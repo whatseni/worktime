@@ -3,9 +3,10 @@ import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ToolbarProps {
-  numSelected: any;
+  numSelected: string[];
+  onClickDeleteUser: () => Promise<void>;
 }
-export default function UserToolbar({ numSelected }: ToolbarProps) {
+export default function UserToolbar({ numSelected, onClickDeleteUser }: ToolbarProps) {
   return (
     <Toolbar sx={[
       {
@@ -24,11 +25,11 @@ export default function UserToolbar({ numSelected }: ToolbarProps) {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          {numSelected.length} 명 선택
         </Typography>
       )}
       {numSelected.length > 0 && (
-        <Tooltip title="Delete">
+        <Tooltip title="Delete" onClick={onClickDeleteUser}>
           <IconButton>
             <DeleteIcon />
           </IconButton>

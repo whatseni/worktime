@@ -3,14 +3,6 @@ import { ReturnCode } from "../types/ReturnCode";
 import { GetAllUserParmsType } from "../types/apiPayload";
 import { Event } from "react-big-calendar";
 
-export const handleLogin = async () => {
-  try {
-    const result = await axios.post("http://localhost:5000/admin/login-admin");
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 export const handleCreateOrUpdateUser = async ({
   userName,
   userRole,
@@ -20,6 +12,7 @@ export const handleCreateOrUpdateUser = async ({
   userBank,
   userBankAccount,
   company,
+  id
 }: any) => {
   try {
     const result = await axios.post(
@@ -33,6 +26,7 @@ export const handleCreateOrUpdateUser = async ({
         userBank: userBank,
         userBankAccount: userBankAccount,
         userCompany: "PB",
+        id: id
       }
     );
     console.log(result);
@@ -41,14 +35,16 @@ export const handleCreateOrUpdateUser = async ({
   }
 };
 
-export const handleDeleteUser = async ({ userPhone }: any) => {
+export const handleDeleteUsers = async (selected : string[]): Promise<boolean> => {
   try {
-    const result = await axios.post("http://localhost:5000/user/delete-user", {
-      userPhone: userPhone,
+    const response = await axios.post("http://localhost:5000/admin/delete-user", {
+      selected: selected,
     });
+    if (response.data.code === ReturnCode.SUCCESS) return true;
   } catch (error) {
     console.log(error);
   }
+  return false;
 };
 
 export const handleGetAllUser = async ({ company }: any) => {

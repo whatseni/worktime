@@ -7,19 +7,52 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { CurrentAdminContext } from './context/adminContext';
 import { calculatePay, calculatePayTax } from '../utils/func';
-
-
-
+import { TimesDataType } from '../types/apiPayload';
+import { utils, writeFile } from 'xlsx';
 
 export default function TableComponent() {
   const [date, setDate] = useState<Date>(new Date());
-  const [timesData, setTimesData] = useState([]);
+  const [timesData, setTimesData] = useState<TimesDataType[]>([]);
 
   const { currentCompany } = useContext(CurrentAdminContext);
 
-  const handleClickPrevMonth = () => {};
-  const handleClickNextMonth = () => {};
+  const handleClickPrevMonth = () => {
+    let newDate = new Date(date);
+    newDate.setMonth(newDate.getMonth() - 1);
+    setDate(newDate);
+  };
+  
+  const handleClickNextMonth = () => {
+    let newDate = new Date(date);
+    newDate.setMonth(newDate.getMonth() + 1);
+    setDate(newDate);
+  };
+  
+  const handleDownloadExcel = (data: any, file_name: any) => {
+    const workbook = utils.book_new();
+    // 행의 데이터 준비
+    const dates = Object.keys(data);  // 날짜들
+    const vmlist = Object.keys(data[dates[0]]);  // 각 날짜의 키들
 
+    // 시트 데이터 배열 생성 (첫 행에는 날짜 추가)
+    const sheetData = [
+        ["", ...dates]  // 첫 번째 행: 빈 값과 날짜들
+    ];
+
+    // 각 키에 대한 행 생성
+    vmlist.forEach(key => {
+        const row = [key];  // 첫 번째 열에는 키 값
+        dates.forEach(date => {
+            row.push(data[date][key]);
+        });
+        sheetData.push(row);
+    });
+
+
+    const worksheet = utils.aoa_to_sheet(sheetData);
+    utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    writeFile(workbook, file_name);
+  }
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -74,7 +107,7 @@ export default function TableComponent() {
             </TableHead>
             <TableBody>
               {
-                timesData && timesData.map((data: any) => (
+                timesData && timesData.map((data: TimesDataType) => (
                   <TableRow key={data.userId}>
                     <TableCell>
                       <Checkbox/>

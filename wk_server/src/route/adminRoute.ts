@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   createOrUpdateUser,
-  deleteUser,
+  deleteUsers,
   getAllUsersAllTimeByCompanyAndMonth,
   getAllUsersTimeByCompanyAndMonth,
   loginAdmin,
@@ -13,7 +13,7 @@ const adminRouter = Router();
 adminRouter.post("/login-admin", loginAdmin);
 
 // 유저 관련
-adminRouter.post("/delete-user", deleteUser);
+adminRouter.post("/delete-user", deleteUsers);
 adminRouter.post("/get-alluser-info", getAllUsers);
 adminRouter.post("/get-alluser-name", getAllUsersName);
 adminRouter.post("/create-or-update-user", createOrUpdateUser);
