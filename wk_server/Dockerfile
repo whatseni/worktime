@@ -1,6 +1,5 @@
-
 # Node.js 이미지 선택
-FROM node:18
+FROM node:20
 
 # 작업 디텍터리 생성
 RUN mkdir -p /wk_server
@@ -9,12 +8,11 @@ RUN mkdir -p /wk_server
 WORKDIR /wk_server
 
 # 소스 복사
-COPY ./wk_server/package.json /wk_server
-COPY ./wk_server/tsconfig.json /wk_server
-COPY ./wk_server/src /wk_server/src
+COPY . .
 
 # 패키지 설치
 RUN npm install
+
 
 # 컴파일
 RUN npm run compile

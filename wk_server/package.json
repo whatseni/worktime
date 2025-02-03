@@ -18,6 +18,7 @@
     "typescript": "^5.5.4"
   },
   "scripts": {
+    "compile": "tsc ",
     "start": "node dist/app.js",
     "dev": "set NODE_ENV=development && nodemon - exec 'ts-node' app.ts"
   },
