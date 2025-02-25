@@ -1,13 +1,17 @@
 # React 앱 빌드 단계
 FROM node:20 AS build
 WORKDIR /admin
-COPY package.json ./
-RUN yarn
+COPY package.json yarn.lock .  
+RUN yarn install --frozen-lockfile 
+
 COPY . .
 RUN yarn build
 
-# Nginx로 배포 단계
 FROM nginx:alpine
-COPY --from=build /admin/build /usr/share/nginx/admin
+
+COPY --from=build /admin/build /usr/share/nginx/html
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
