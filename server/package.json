@@ -6,7 +6,7 @@
     "@types/bcrypt": "^5.0.2",
     "bcrypt": "^5.1.1"
   },
-  "name": "wk_server",
+  "name": "server",
   "version": "1.0.0",
   "main": "app.js",
   "devDependencies": {
