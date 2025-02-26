@@ -2,31 +2,25 @@ import { Request, Response } from "express";
 import Admin from "../model/Admin";
 import { ReturnCode } from "../utils/Code";
 import Time from "../model/Time";
-import {
-  calculateTimeDifference,
-  combineDateAndTime,
-  getAllTimeByUser,
-} from "../utils/func";
+import { calculateTimeDifference, combineDateAndTime } from "../utils/func";
 import User from "../model/User";
-import { compare, hash } from "bcrypt";
 
-const saltRounds = 12;
 export const loginAdmin = async (req: Request, res: Response) => {
   try {
     const { id, password } = req.body;
     const user = await Admin.findOne({ id: id });
     if (!user) {
-      return res.status(404).send('User not found');
+      return res.status(404).send("User not found");
     }
-    const match = await compare(password, user.password);
-    if (match) {
-      res.status(200).json({ code: ReturnCode.SUCCESS, data: {
-        id: user.id,
-        company: user.company
-      } });
-    } else {
-      res.status(401).json({ code: ReturnCode.SUCCESS, data: match });
-    }
+    // const match = await compare(password, user.password);
+    // if (match) {
+    //   res.status(200).json({ code: ReturnCode.SUCCESS, data: {
+    //     id: user.id,
+    //     company: user.company
+    //   } });
+    // } else {
+    //   res.status(401).json({ code: ReturnCode.SUCCESS, data: match });
+    // }
   } catch (error: any) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
   }
@@ -223,7 +217,7 @@ export const createOrUpdateUser = async (req: Request, res: Response) => {
       userBank,
       userBankAccount,
       userCompany,
-      id
+      id,
     } = req.body;
 
     // `findOneAndUpdate`와 `upsert` 옵션 사용
@@ -286,4 +280,3 @@ export const deleteUsers = async (req: Request, res: Response) => {
     res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
   }
 };
-
