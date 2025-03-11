@@ -4,23 +4,49 @@ import { ReturnCode } from "../utils/Code";
 import Time from "../model/Time";
 import { calculateTimeDifference, combineDateAndTime } from "../utils/func";
 import User from "../model/User";
+const bcrypt = require("bcryptjs");
+
+export const createAdmin = async (req: Request, res: Response) => {
+  try {
+    const { id, password, company } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const result = await Admin.create({
+      id: id,
+      password: hashedPassword,
+      company: company,
+    });
+    res.status(200).json({
+      code: ReturnCode.SUCCESS,
+      message: "Admin created",
+    });
+  } catch (error: any) {
+    res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
+  }
+};
 
 export const loginAdmin = async (req: Request, res: Response) => {
   try {
     const { id, password } = req.body;
     const user = await Admin.findOne({ id: id });
+
     if (!user) {
       return res.status(404).send("User not found");
     }
-    // const match = await compare(password, user.password);
-    // if (match) {
-    //   res.status(200).json({ code: ReturnCode.SUCCESS, data: {
-    //     id: user.id,
-    //     company: user.company
-    //   } });
-    // } else {
-    //   res.status(401).json({ code: ReturnCode.SUCCESS, data: match });
-    // }
+    console.log(user, password);
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (isValidPassword) {
+      res.status(200).json({
+        code: ReturnCode.SUCCESS,
+        data: {
+          id: user.id,
+          company: user.company,
+        },
+      });
+    } else {
+      res
+        .status(401)
+        .json({ code: ReturnCode.FAILED, data: { isValidPassword } });
+    }
   } catch (error: any) {
     res.status(500).json({ code: ReturnCode.ERROR, message: error.message });
   }

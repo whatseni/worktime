@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  createAdmin,
   createOrUpdateUser,
   deleteUsers,
   getAllUsersAllTimeByCompanyAndMonth,
@@ -11,6 +12,7 @@ import { getAllUsers, getAllUsersName } from "../controller/userController";
 const adminRouter = Router();
 
 adminRouter.post("/login-admin", loginAdmin);
+adminRouter.post("/create-admin", createAdmin);
 
 // 유저 관련
 adminRouter.post("/delete-user", deleteUsers);

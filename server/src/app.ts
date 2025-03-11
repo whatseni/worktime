@@ -17,7 +17,7 @@ app.use("/time", timeRouter);
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 
-mongoose.connect("mongodb://192.168.75.160:27017/Worktime");
+mongoose.connect("mongodb://localhost:27017/Worktime");
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB Connection error"));
