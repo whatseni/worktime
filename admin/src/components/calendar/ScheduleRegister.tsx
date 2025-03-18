@@ -12,8 +12,14 @@ import SelectUserInput from "./SelectUserInput";
 import { ReturnCode } from "../../types/ReturnCode";
 import { SelectUserType } from "../../types/apiPayload";
 
+import 'dayjs/locale/ko';
+
+dayjs.locale('ko');
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.tz.setDefault('Asia/Seoul');
+
 
 export default function ScheduleRegister() {
   const [open, setOpen] = useState<boolean>(false);
@@ -23,7 +29,7 @@ export default function ScheduleRegister() {
   const [selectUser, setSelectUser] = useState<SelectUserType | null>(null);
 
   const { currentCompany } = useContext(CurrentAdminContext);
- 
+
   const onClickRegisterButton = async () => {
     if (!start || !end) {
       toast.error("시작 날짜와 종료 날짜를 선택하세요.");
@@ -41,8 +47,8 @@ export default function ScheduleRegister() {
         userPhone: selectUser?.userPhone,
         userCompany: "PB",
         date: start.utc().format("YYYY-MM-DD"), // UTC 기준 날짜
-        start: start.utc().format("HH:mm"),    // UTC 기준 시간
-        end: end.utc().format("HH:mm"),
+        start: start.format("HH:mm"),    // UTC 기준 시간
+        end: end.format("HH:mm"),
       });
 
       if (response === ReturnCode.SUCCESS) {
@@ -62,8 +68,8 @@ export default function ScheduleRegister() {
       </Box>
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>등록</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", flexWrap: "wrap", gap: "20px"}}>
-          <SelectUserInput setSelectUser={setSelectUser}/>
+        <DialogContent sx={{ display: "flex", flexDirection: "column", flexWrap: "wrap", gap: "20px" }}>
+          <SelectUserInput setSelectUser={setSelectUser} />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker label="시작 시간" onChange={(newValue) => setStart(newValue ? newValue.tz("Asia/Seoul") : null)} />
             <DateTimePicker label="종료 시간" onChange={(newValue) => setEnd(newValue ? newValue.tz("Asia/Seoul") : null)} />
