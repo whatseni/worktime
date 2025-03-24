@@ -79,15 +79,15 @@ export default function AppSidebar() {
           {isExpanded || isMobileOpen ? (
             <>
               <Image
-                src="/images/logo/logo.svg"
+                src="/images/group.svg"
                 alt="Logo"
-                width={150}
+                width={40}
                 height={40}
               />
             </>
           ) : (
             <Image
-              src="/images/logo/logo-icon.svg"
+              src="/images/group.svg"
               alt="Logo"
               width={32}
               height={32}
