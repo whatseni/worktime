@@ -17,5 +17,5 @@ const StaffSchema = new Schema({
 
 type StaffType = InferSchemaType<typeof StaffSchema>;
 
-export default mongoose.model.Staff || mongoose.model("Staff", StaffSchema);
+export default mongoose.models.Staff || mongoose.model("Staff", StaffSchema);
 export type { StaffType };

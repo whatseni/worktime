@@ -5,12 +5,16 @@ const TimeSchema = new Schema({
   _id: Schema.Types.ObjectId,
   staffId: Schema.Types.ObjectId,
   name: String,
-  data: Date,
+  company:  {
+    type: String,
+    enum: ["PB", "MEGA"]
+  },
+  date: String,
   start: String,
   end: String
 });
 
 type TimeType = InferSchemaType<typeof TimeSchema>;
 
-export default mongoose.model.Time || mongoose.model("Time", TimeSchema);
+export default mongoose.models.Time || mongoose.model("Time", TimeSchema);
 export type { TimeType };
