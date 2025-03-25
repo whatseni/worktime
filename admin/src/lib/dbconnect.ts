@@ -6,17 +6,17 @@ declare global {
   var mongoose: {
     promise: ReturnType<typeof connect> | null;
     conn: typeof _mongoose | null;
-  };
+  }
 }
 
 if (!TEST_URI) {
-  throw new Error("DB 접속 URI 확인 바람.");
+  throw new Error("DB 접속 URI 확인 바람.")
 }
 
 let cached = global.mongoose;
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+  cached = global.mongoose = { conn: null, promise: null }
 }
 
 async function dbConnect() {
@@ -30,15 +30,13 @@ async function dbConnect() {
       bufferCommands: false,
     };
 
-    cached.promise = connect(TEST_URI!, opts)
-      .then((mongoose) => {
-        console.log("DB 커넥션 생성");
-        return mongoose;
-      })
-      .catch((error) => {
-        console.log("DB 커넥션 실패");
-        throw error;
-      });
+    cached.promise = connect(TEST_URI!, opts).then((mongoose) => {
+      console.log("DB 커넥션 생성");
+      return mongoose;
+    }).catch((error) => {
+      console.log("DB 커넥션 실패");
+      throw error;
+    });
   }
 
   try {

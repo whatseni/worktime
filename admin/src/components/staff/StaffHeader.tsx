@@ -14,13 +14,19 @@ export default function StaffHeader() {
         isHeader
         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
       >
+        소속
+      </TableCell>
+      <TableCell
+        isHeader
+        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+      >
         핸드폰 번호
       </TableCell>
       <TableCell
         isHeader
         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
       >
-        시간대
+        생년월일
       </TableCell>
       <TableCell
         isHeader

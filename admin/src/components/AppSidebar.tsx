@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 
-import { useSidebar } from "../_context/SidebarContext";
+import { useSidebar } from "../context/SidebarContext";
 
 type NavItem = {
   name: string;

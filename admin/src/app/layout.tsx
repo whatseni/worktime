@@ -1,4 +1,4 @@
-import { SidebarProvider } from "../_context/SidebarContext";
+import { SidebarProvider } from "../context/SidebarContext";
 import "./globals.css";
 
 export default function RootLayout({

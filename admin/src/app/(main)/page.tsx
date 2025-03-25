@@ -1,4 +1,5 @@
-import Calendar from "@/_components/Calendar";
+
+import Calendar from "@/src/components/Calendar";
 
 export default function Main() {
   return (

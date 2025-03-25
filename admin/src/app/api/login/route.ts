@@ -1,5 +1,5 @@
-import dbConnect from "@/src/_lib/dbconnect";
-import Admin from "@/src/_models/admin";
+import dbConnect from "@/src/lib/dbconnect";
+import Admin from "@/src/models/admin";
 
 export async function POST(req: Request) {
   try {

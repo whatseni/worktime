@@ -1,7 +1,7 @@
-import dbConnect from "@/src/_lib/dbconnect";
-import Time, { TimeType } from "../../../_models/time"
+import dbConnect from "@/src/lib/dbconnect";
+import Time, { TimeType } from "../../../models/time"
 import { calculateTime } from "../../utils/format";
-import Staff from "@/src/_models/staff";
+import Staff from "@/src/models/staff";
 import { Types } from "mongoose";
 
 export async function GET(req: Request) {

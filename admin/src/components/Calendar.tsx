@@ -26,11 +26,11 @@ export default function Calendar() {
   const [eventDate, setEventDate] = useState("");
   const [eventStartTime, setEventStartTime] = useState("");
   const [eventEndTime, setEventEndTime] = useState("");
-
+  
   const calendarRef = useRef<FullCalendar>(null);
-
+  
   const [isOpen, setIsOpen] = useState(false);
-
+  
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
@@ -74,7 +74,7 @@ export default function Calendar() {
     setEventStartTime("");
     setEventEndTime("");
   }
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -86,7 +86,7 @@ export default function Calendar() {
     };
 
     fetchData();
-  }, [])
+  },[])
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white">
@@ -98,7 +98,7 @@ export default function Calendar() {
           headerToolbar={{
             left: "prev,next addEventButton",
             center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay"
+            right: "dayGridMonth"
           }}
           events={events}
           selectable={true}
@@ -112,11 +112,11 @@ export default function Calendar() {
             }
           }}
         />
-        <CalendarModal isOpen={isOpen} onClose={closeModal} selectedEvent={selectedEvent}
-          eventDate={eventDate} setEventDate={setEventDate}
-          eventStartTime={eventStartTime} eventEndTime={eventEndTime}
-          setEventStartTime={setEventStartTime} setEventEndTime={setEventEndTime}
-          handleAddEvents={handleAddEvents}
+        <CalendarModal isOpen={isOpen} onClose={closeModal} selectedEvent={selectedEvent} 
+        eventDate={eventDate} setEventDate={setEventDate}
+        eventStartTime={eventStartTime} eventEndTime={eventEndTime}
+        setEventStartTime={setEventStartTime} setEventEndTime={setEventEndTime}
+        handleAddEvents={handleAddEvents}
         />
       </div>
     </div>

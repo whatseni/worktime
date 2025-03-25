@@ -2,9 +2,12 @@ import { InferSchemaType, Schema } from "mongoose";
 const mongoose = require("mongoose");
 
 const AdminSchema = new Schema({
-  _id: Schema.Types.ObjectId,
-  id: String,
-  password: String,
+  id: { type: String },
+  password: { type: String },
+  company: {
+    type: String,
+    enum: ["PB", "MEGA"]
+  },
 });
 
 type AdminType = InferSchemaType<typeof AdminSchema>;

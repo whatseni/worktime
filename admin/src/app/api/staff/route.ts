@@ -1,5 +1,6 @@
-import dbConnect from "@/src/_lib/dbconnect";
-import Staff from "@/src/_models/staff";
+import dbConnect from "@/src/lib/dbconnect";
+import Staff from "@/src/models/staff";
+import { Types } from "mongoose";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -33,7 +34,8 @@ export async function POST(req: Request) {
 
     await dbConnect();
     const data = await Staff.create({
-      
+      _id: new Types.ObjectId(),
+      ...requestMap
     });
 
     return Response.json({ data: data })
