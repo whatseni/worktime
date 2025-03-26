@@ -3,27 +3,33 @@ import React, { useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-
-
 import { useSidebar } from "../context/SidebarContext";
+
+import CalendarIcon from "../icons/calendar.svg"
+import UserCircleIcon from "../icons/user-circle.svg"
+import DollarIcon from "../icons/dollar-line.svg"
 
 type NavItem = {
   name: string;
   path?: string;
+  icon: React.ReactNode;
 };
 
 const navItems: NavItem[] = [
   {
     name: "달력",
     path: "/",
+    icon: <CalendarIcon />
   },
   {
     name: "급여",
     path: "/pay",
+    icon: <DollarIcon />
   },
   {
     name: "근로자",
     path: "/staff",
+    icon: <UserCircleIcon />
   }
 ];
 
@@ -46,6 +52,15 @@ export default function AppSidebar() {
                   isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                 }`}
               >
+                <span
+                  className={`${
+                    isActive(nav.path)
+                      ? "menu-item-icon-active"
+                      : "menu-item-icon-inactive"
+                  }`}
+                >
+                  {nav.icon}
+                </span>
                 {(isExpanded || isMobileOpen) && (
                   <span className={`menu-item-text`}>{nav.name}</span>
                 )}

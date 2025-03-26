@@ -1,29 +1,75 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../common/Modal";
 import Radio from "../common/Radio";
 import Switch from "../common/Switch";
 import axios from "axios";
+import Input from "../common/Input";
+import Select from "../common/Select";
+import { BANK_LIST } from "@/src/lib/bankList";
 
 interface ModalProps {
   isOpen: boolean;
   closeModal: () => void;
   info: any;
 }
-export default function StaffInfoModal({ isOpen, closeModal, info = null }: ModalProps) {
-  const [staffData, setStaffData] = useState(info ? info : {
+export default function StaffInfoModal({ isOpen, closeModal, info }: ModalProps) {
+  
+  const [staffData, setStaffData] = useState<any>({
     _id: "",
     name: "",
     birth: "",
     phone: "",
     bank: "",
     bankAccount: "",
+    workDay: [],
+    startTime: "",
+    endTime: "",
     isWeek: false
   });
 
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (info) {
+      setStaffData(info);
+    }
+  }, [info]);
+
+  const handleDayChange = (day: string) => {
+    setStaffData((prev: any) => {
+      const workDay = prev.workDay.includes(day)
+        ? prev.workDay.filter((d: string) => d !== day)
+        : [...prev.workDay, day];
+      return { ...prev, workDay };
+    });
+  };
+
+  const handleBlurPhone = (e: React.FocusEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const isValidPhone = /^010-[0-9]{4}-[0-9]{4}$/.test(value);
+    
+    setError(!isValidPhone);
+  
+    if (isValidPhone) {
+      setStaffData((prev: any) => ({
+        ...prev,
+        phone: value
+      }));
+    }
+  };
+
   const handleClick = async () => {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_DEV_URL}/api/staff`, {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_DEV_URL}/api/staff?id=${staffData._id}`, {
       company: "PB",
-      ...staffData
+      name: staffData.name,
+      birth: staffData.birth,
+      phone: staffData.phone,
+      bank: staffData.bank,
+      bankAccount: staffData.bankAccount,
+      workDay: staffData.workDay,
+      startTime: staffData.startTime,
+      endTime: staffData.endTime,
+      isWeek: false
     })
     console.log(response);
   }
@@ -45,10 +91,9 @@ export default function StaffInfoModal({ isOpen, closeModal, info = null }: Moda
               이름 입력
             </label>
             <div className="relative">
-              <input 
+              <Input 
                 id="staff-name"
                 type="text"
-                className="input__box"
                 value={staffData.name}
                 onChange={(e) => {
                   setStaffData((prev: any) => ({
@@ -65,10 +110,9 @@ export default function StaffInfoModal({ isOpen, closeModal, info = null }: Moda
               생년월일
             </label>
             <div className="relative">
-              <input 
+              <Input 
                 id="staff-birth"
                 type="date"
-                className="input__box"
                 value={staffData.birth}
                 onChange={(e) => {
                   setStaffData((prev: any) => ({
@@ -85,17 +129,20 @@ export default function StaffInfoModal({ isOpen, closeModal, info = null }: Moda
               핸드폰 번호
             </label>
             <div className="relative">
-              <input 
+              <Input 
                 id="staff-phone"
                 type="text"
-                className="input__box"
+                placeholder="010-****-****"
+                error={error}
                 value={staffData.phone}
+                onBlur={handleBlurPhone}
                 onChange={(e) => {
                   setStaffData((prev: any) => ({
                     ...prev,
                     phone: e.target.value
                   }))
                 }}
+                hint={error ? "핸드폰 번호 형식을 맞춰주세요." : ""}
               />
             </div>
           </div>
@@ -105,17 +152,16 @@ export default function StaffInfoModal({ isOpen, closeModal, info = null }: Moda
               은행
             </label>
             <div className="relative">
-              <input 
-                id="staff-bank"
-                type="text"
-                className="input__box"
-                value={staffData.bank}
-                onChange={(e) => {
+              <Select 
+                options={BANK_LIST}
+                placeholder="은행을 선택해주세요."
+                onChange={(e: any) => {
                   setStaffData((prev: any) => ({
                     ...prev,
                     bank: e.target.value
                   }))
                 }}
+                selectedValue={staffData.bank}
               />
             </div>
           </div>
@@ -125,10 +171,9 @@ export default function StaffInfoModal({ isOpen, closeModal, info = null }: Moda
               계좌번호
             </label>
             <div className="relative">
-              <input 
+              <Input 
                 id="staff-bankA"
                 type="text"
-                className="input__box"
                 value={staffData.bankAccount}
                 onChange={(e) => {
                   setStaffData((prev: any) => ({
@@ -145,13 +190,20 @@ export default function StaffInfoModal({ isOpen, closeModal, info = null }: Moda
               근무 시간대
             </label>
             <div className="relative flex">
-              <Radio id="Mon" name="Mon" value="0" checked={false} onChange={() => {}} label="월"/>
-              <Radio id="Tue" name="Tue" value="0" checked={false} onChange={() => {}} label="화"/>
-              <Radio id="Wed" name="Wed" value="0" checked={false} onChange={() => {}} label="수"/>
-              <Radio id="Thu" name="Thu" value="0" checked={false} onChange={() => {}} label="목"/>
-              <Radio id="Fri" name="Fri" value="0" checked={false} onChange={() => {}} label="금"/>
-              <Radio id="Sat" name="Sat" value="0" checked={false} onChange={() => {}} label="토"/>
-              <Radio id="Sun" name="Sun" value="0" checked={false} onChange={() => {}} label="일"/>
+              <Radio id="Mon" name="Mon" value="0" checked={staffData.workDay.includes("Mon")} 
+                onChange={() => handleDayChange("Mon")} label="월"/>
+              <Radio id="Tue" name="Tue" value="1" checked={staffData.workDay.includes("Tue")} 
+                onChange={() => handleDayChange("Tue")} label="화"/>
+              <Radio id="Wed" name="Wed" value="2" checked={staffData.workDay.includes("Wed")} 
+                onChange={() => handleDayChange("Wed")} label="수"/>
+              <Radio id="Thu" name="Thu" value="3" checked={staffData.workDay.includes("Thu")} 
+                onChange={() => handleDayChange("Thu")} label="목"/>
+              <Radio id="Fri" name="Fri" value="4" checked={staffData.workDay.includes("Fri")} 
+                onChange={() => handleDayChange("Fri")} label="금"/>
+              <Radio id="Sat" name="Sat" value="5" checked={staffData.workDay.includes("Sat")} 
+                onChange={() => handleDayChange("Sat")} label="토"/>
+              <Radio id="Sun" name="Sun" value="6" checked={staffData.workDay.includes("Sun")} 
+                onChange={() => handleDayChange("Sun")} label="일"/>
             </div>
           </div>
 
@@ -161,11 +213,16 @@ export default function StaffInfoModal({ isOpen, closeModal, info = null }: Moda
                 시작 시간
               </label>
               <div className="relative">
-                <input 
+                <Input 
                   id="event-start-time"
                   type="time"
-                  onChange={() => {}}
-                  className="input__box"
+                  value={staffData.startTime}
+                  onChange={(e) => {
+                    setStaffData((prev: any) => ({
+                      ...prev,
+                      startTime: e.target.value
+                    }))
+                  }}
                 />
               </div>
             </div>
@@ -174,11 +231,16 @@ export default function StaffInfoModal({ isOpen, closeModal, info = null }: Moda
                 종료 시간
               </label>
               <div className="relative">
-                <input 
+                <Input 
                   id="event-start-time"
                   type="time"
-                  onChange={() => {}}
-                  className="input__box"
+                  value={staffData.endTime}
+                  onChange={(e) => {
+                    setStaffData((prev: any) => ({
+                      ...prev,
+                      endTime: e.target.value
+                    }))
+                  }}
                 />
               </div>
             </div>
@@ -209,9 +271,10 @@ export default function StaffInfoModal({ isOpen, closeModal, info = null }: Moda
           <button
             onClick={handleClick}
             type="button"
-            className="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+            disabled={error ? true : false}
+            className={`${error ? "bg-brand-100": "bg-brand-500 hover:bg-brand-600"} btn btn-success btn-update-event flex w-full justify-center rounded-lg  px-4 py-2.5 text-sm font-medium text-white sm:w-auto`}
           >
-            등록
+            {info ? "수정" : "등록"}
           </button>
         </div>
       </div>

@@ -8,6 +8,7 @@ import axios from "axios";
 import TrashBinIcon from "../../icons/trash.svg";
 import EditIcon from "../../icons/pencil.svg";
 import StaffInfoModal from "./StaffInfoModal";
+import { BANK_LIST } from "@/src/lib/bankList";
 
 export default function StaffTable() {
   const [staffList, setStaffList] = useState([]);
@@ -43,26 +44,32 @@ export default function StaffTable() {
               {
                 staffList.map((staff: any) => (
                   <TableRow key={staff._id.toString()}>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400"
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm"
                     >
                       {staff.name}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm">
                       {staff.company}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm">
                       {staff.phone}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm">
                       {staff.birth}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                      {staff.bank}
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm">
+                      {staff.workDay.join(',')}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm">
+                      {staff.startTime}~{staff.endTime}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm">
+                      {BANK_LIST.find((bank) => bank.key === staff.bank)?.value}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm">
                       {staff.bankAccount}
                     </TableCell>
-                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm">
                       {staff.isWeek}
                     </TableCell>
                     <TableCell>
@@ -84,13 +91,13 @@ export default function StaffTable() {
             </TableBody>
             
           </Table>
-          <div className="px-6 py-4 border-t border-gray-200 dark:border-white/[0.05]">
+          {/* <div className="px-6 py-4 border-t border-gray-200 dark:border-white/[0.05]">
             <Pagination 
               currentPage={0}
               totalPages={2}
               onPageChange={() => {}}
             />
-          </div>
+          </div> */}
           
         </div>
       </div>

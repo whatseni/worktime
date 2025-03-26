@@ -8,10 +8,15 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
   const company = searchParams.get("company") as string;
+  const year = searchParams.get("year") as string;
+  const month = searchParams.get("month") as string;
 
   try {
     await dbConnect();
-    const dataList = await Time.find({company: company});
+    const dataList = await Time.find({
+      company: company,
+      date: { $regex: `^${year}-${month.padStart(2, '0')}` }
+    });
 
     const returnData: any = [];
     dataList.forEach((data: TimeType) => {
@@ -31,7 +36,7 @@ export async function GET(req: Request) {
 
     return Response.json({ data: returnData })
   } catch (error) {
-    console.error("error find time")
+    console.error(error)
     return Response.json({ data: null })
   }
 }

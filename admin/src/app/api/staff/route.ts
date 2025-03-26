@@ -21,27 +21,34 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id") as string;
+
   const requestMap = await req.json();
-  const company = requestMap.company;
-  const name = requestMap.name;
-  const phone = requestMap.phone;
-  const birth = requestMap.birth;
-  const bank = requestMap.bank;
-  const bankAccount = requestMap.bankAccount;
-  const isWeek = requestMap.isWeek;
 
-  try {
-
-    await dbConnect();
-    const data = await Staff.create({
-      _id: new Types.ObjectId(),
-      ...requestMap
-    });
-
-    return Response.json({ data: data })
-  } catch (error) {
-    console.error("error find time")
-    return Response.json({ data: "error"})
+  if (id) {
+    try {
+      await dbConnect();
+      const data = await Staff.findByIdAndUpdate(id, requestMap)
+  
+      return Response.json({ data: data })
+    } catch (error) {
+      console.error(error)
+      return Response.json({ data: "error"})
+    }
+  } else {
+    try {
+      await dbConnect();
+      const data = await Staff.create({
+        _id: new Types.ObjectId(),
+        ...requestMap
+      });
+  
+      return Response.json({ data: data })
+    } catch (error) {
+      console.error("error find time")
+      return Response.json({ data: "error"})
+    }
   }
 }
 
@@ -51,31 +58,6 @@ export async function DELETE(req: Request) {
   try {
     await dbConnect();
     const data = await Staff.findByIdAndDelete(id)
-
-    return Response.json({ data: data })
-  } catch (error) {
-    console.error("error find time")
-    return Response.json({ data: "error"})
-  }
-}
-
-export async function PUT(req: Request) {
-  const requestMap = await req.json();
-
-  const id = requestMap.id;
-  const company = requestMap.company;
-  const name = requestMap.name;
-  const phone = requestMap.phone;
-  const birth = requestMap.birth;
-  const bank = requestMap.bank;
-  const bankAccount = requestMap.bankAccount;
-  const isWeek = requestMap.isWeek;
-
-  try {
-    await dbConnect();
-    const data = await Staff.findByIdAndUpdate(id, {
-      
-    })
 
     return Response.json({ data: data })
   } catch (error) {

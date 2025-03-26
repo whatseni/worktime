@@ -12,6 +12,9 @@ const StaffSchema = new Schema({
   bankAccount: String,
   birth: String,
   phone: String,
+  workDay: Array,
+  startTime: String,
+  endTime: String,
   isWeek: Boolean
 });
 

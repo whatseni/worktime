@@ -1,13 +1,15 @@
 "use client";
 
+import { useAdmin } from "@/src/context/AdminContext";
 import axios from "axios";
 import { redirect } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Login() {
 
   const [id, setId] = useState("")
-  const [password, setPassword] = useState("")
+  const [password, setPassword] = useState("");
+  const { login } = useAdmin();
 
   const handleLogin = async () => {
     const response = await axios.post(`${process.env.NEXT_PUBLIC_DEV_URL}/api/login`, {
@@ -16,9 +18,14 @@ export default function Login() {
     })
 
     if (response) {
+      login(response.data.data.id, response.data.data.company)
       redirect('/')
     }
   }
+
+  useEffect(() => {
+
+  }, [])
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
     <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">

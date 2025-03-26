@@ -28,6 +28,9 @@ export default function Calendar() {
   const [eventEndTime, setEventEndTime] = useState("");
   
   const calendarRef = useRef<FullCalendar>(null);
+  const today = new Date();
+  const [year, setYear] = useState<number>(today.getFullYear());
+  const [month, setMonth] = useState<number>(today.getMonth() + 1);
   
   const [isOpen, setIsOpen] = useState(false);
   
@@ -55,8 +58,6 @@ export default function Calendar() {
       selected: selected,
       company: "PB"
     });
-    console.log(response)
-    return response;
   }
 
   const handleDeleteEvent = async (selected: any) => {
@@ -65,8 +66,6 @@ export default function Calendar() {
         eventId: eventId
       }
     })
-
-    console.log(response)
   }
 
   const resetModalFields = () => {
@@ -74,11 +73,19 @@ export default function Calendar() {
     setEventStartTime("");
     setEventEndTime("");
   }
-  
+
+  const handleDatesSet = (dateInfo: any) => {
+    const monthStart = dateInfo.view.currentStart;
+    const year = monthStart.getFullYear();
+    const month = monthStart.getMonth() + 1;
+    setYear(year);
+    setMonth(month);
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time?company=PB`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time?company=PB&year=${year}&month=${month}`);
         setEvents(response.data.data);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -86,7 +93,7 @@ export default function Calendar() {
     };
 
     fetchData();
-  },[])
+  },[year, month])
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white">
@@ -94,7 +101,6 @@ export default function Calendar() {
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
           headerToolbar={{
             left: "prev,next addEventButton",
             center: "title",
@@ -111,6 +117,7 @@ export default function Calendar() {
               click: openModal
             }
           }}
+          datesSet={handleDatesSet}
         />
         <CalendarModal isOpen={isOpen} onClose={closeModal} selectedEvent={selectedEvent} 
         eventDate={eventDate} setEventDate={setEventDate}

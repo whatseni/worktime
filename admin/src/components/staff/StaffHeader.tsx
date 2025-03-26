@@ -32,6 +32,18 @@ export default function StaffHeader() {
         isHeader
         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
       >
+        근무 요일
+      </TableCell>
+      <TableCell
+        isHeader
+        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+      >
+        근무 시간대
+      </TableCell>
+      <TableCell
+        isHeader
+        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+      >
         은행
       </TableCell>
       <TableCell

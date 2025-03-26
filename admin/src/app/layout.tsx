@@ -1,3 +1,4 @@
+import { AdminProvider } from "../context/AdminContext";
 import { SidebarProvider } from "../context/SidebarContext";
 import "./globals.css";
 
@@ -10,7 +11,11 @@ export default function RootLayout({
     <html lang="en">
       <body
       >
-        <SidebarProvider>{children}</SidebarProvider>
+        <AdminProvider>
+          <SidebarProvider>
+            {children}
+          </SidebarProvider>
+        </AdminProvider>
       </body>
     </html>
   );

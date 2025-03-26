@@ -1,10 +1,5 @@
 @import 'tailwindcss';
 
-.input__box {
-  @apply h-11 w-full rounded-lg border border-gray-300 bg-transparent bg-none
-  px-4 py-2.5 pl-4 pr-11 text-sm text-gray-800 shadow-xs placeholder:text-gray-400
-  focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10
-}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -35,6 +30,8 @@
   --text-title-sm--line-height: 38px;
   --text-theme-xl: 20px;
   --text-theme-xl--line-height: 30px;
+  --text-theme-md: 18px;
+  --text-theme-md--line-height: 26px;
   --text-theme-sm: 14px;
   --text-theme-sm--line-height: 20px;
   --text-theme-xs: 12px;

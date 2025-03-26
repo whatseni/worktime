@@ -1,0 +1,21 @@
+export const BANK_LIST = [
+  { "key": "0", "value": "국민은행" },
+  { "key": "1", "value": "농협은행" },
+  { "key": "2", "value": "IBK기업은행" },
+  { "key": "3", "value": "새마을금고" },
+  { "key": "4", "value": "우리은행" },
+  { "key": "5", "value": "하나은행" },
+  { "key": "6", "value": "신한은행" },
+  { "key": "7", "value": "토스뱅크" },
+  { "key": "8", "value": "카카오뱅크" },
+  { "key": "9", "value": "케이뱅크" },
+  { "key": "10", "value": "신협은행" },
+  { "key": "11", "value": "우체국" },
+  { "key": "12", "value": "SC제일" },
+  { "key": "13", "value": "부산은행" },
+  { "key": "14", "value": "경남은행" },
+  { "key": "15", "value": "광주은행" },
+  { "key": "16", "value": "전북은행" },
+  { "key": "17", "value": "제주은행" },
+  { "key": "18", "value": "수협은행" }
+]
