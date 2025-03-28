@@ -1,10 +1,10 @@
 "use client"
 
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 export default function AppHeader() {
 
-  const router = useRouter();
+  const router = useRouter()
   return (
     <header className="sticky top-0 w-full z-9999 bg-blue-light-400">
       <div className="flex items-center justify-between grow lg:flex-row">

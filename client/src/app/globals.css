@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 
-
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -592,3 +591,5 @@
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
 }
+
+
