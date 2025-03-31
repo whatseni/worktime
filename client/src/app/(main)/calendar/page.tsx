@@ -5,12 +5,13 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useRef, useState } from "react";
-import { EventInput } from "@fullcalendar/core/index.js";
+import { DatesSetArg, EventContentArg, EventInput } from "@fullcalendar/core/index.js";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "@/src/context/LoginContext";
 
 interface CalendarEvent extends EventInput {
   extendedProps: {
-    startTime: string,
-    endTime: string,
     diff: string
   }
 }
@@ -19,29 +20,61 @@ export default function Calendar() {
   const calendarRef = useRef<FullCalendar>(null);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
+  const today = new Date();
+  const [year, setYear] = useState<number>(today.getFullYear());
+  const [month, setMonth] = useState<number>(today.getMonth() + 1);
+
+  const { getId, getCompany } = useSession();
+
+  const handleDateSet = (dateInfo: DatesSetArg) => {
+    const monthStart = dateInfo.view.currentStart;
+    const year = monthStart.getFullYear();
+    const month = monthStart.getMonth() + 1;
+    setYear(year);
+    setMonth(month);
+  }
+
   useEffect(() => {
     const fetchData = async () => {
-
+      const response = await axios(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time?company=${getCompany()}&year=${year}&month=${month}&userId=${getId()}`)
+      setEvents(response.data.data)
     }
 
     fetchData();
-  }, [])
+  }, [year, month])
+  
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white">
-      <div className="custom-calendar m-4">
-        <FullCalendar
-          ref={calendarRef}
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          headerToolbar={{
-            left: "prev,next",
-            center: "title",
-            right: ""
-          }}
-          events={events}
-          contentHeight={400}
-        />
+    <>
+      <div className="rounded-2xl border border-gray-200 bg-white m-4">
+        <div className="custom-calendar">
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            headerToolbar={{
+              left: "prev,next",
+              center: "title",
+              right: ""
+            }}
+            events={events}
+            height={400}
+            datesSet={handleDateSet}
+            eventContent={renderEventContent}
+          />
+        </div>
       </div>
+      <div className="rounded-2xl border border-gray-200 bg-blue-light-800">
+        시간
+      </div>
+    </>
+  )
+}
+
+const renderEventContent = (eventInfo: EventContentArg) => {
+  console.log(eventInfo)
+  return (
+    <div className="event-fc-color flex fc-event-main fc-bg-primary rounded-sm">
+      <div className="fc-event-title">{eventInfo.event.extendedProps.diff}</div>
     </div>
   )
 }

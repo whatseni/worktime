@@ -14,6 +14,7 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
+    "@tanstack/react-query": "^5.71.1",
     "@types/mongoose": "^5.11.97",
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",

@@ -5,18 +5,13 @@ import Input from "./common/Input"
 
 const DAY = ["일", "월", "화", "수", "목", "금", "토"]
 
-const renderItems = () => {
-  return (
-    <></>
-  )
-}
-
 const getStartOfWeek = (date: Date) => {
   const dayOfWeek = date.getDay();
   const startOfWeek = new Date(date);
   startOfWeek.setDate(date.getDate() - dayOfWeek);
   return startOfWeek;
 }
+
 export default function WeekList() {
   const today = new Date();
   const [weekStart, setWeekStart] = useState(getStartOfWeek(today));
@@ -63,7 +58,7 @@ export default function WeekList() {
 
     }
 
-    fetchData();
+    // fetchData();
   }, [])
 
   return (

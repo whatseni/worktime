@@ -8,13 +8,15 @@ export async function POST(req: Request) {
     const requestMap = await req.json();
     const id = requestMap["id"];
     const pw = requestMap["password"];
-    console.log(id, pw)
   
-    const findAdmin = await staff.findOne({phone: id, birth: pw})
+    const find = await staff.findOne({phone: id, birth: pw}, {
+      _id: true,
+      company: true,
+    })
 
-    if (findAdmin) {
+    if (find) {
       await createSession(id)
-      return Response.json({ data: findAdmin })
+      return Response.json({ data: find })
     }
   } catch (error) {
     console.log(error)

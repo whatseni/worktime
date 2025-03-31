@@ -1,13 +1,17 @@
 "use client";
 
+import { useSession } from "@/src/context/LoginContext";
 import axios from "axios";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Login() {
-
   const [id, setId] = useState("")
   const [password, setPassword] = useState("");
+
+  const { setSession, isLogin } = useSession();
+
+  const router = useRouter();
 
   const handleLogin = async () => {
     const response = await axios.post(`${process.env.NEXT_PUBLIC_DEV_URL}/api/login`, {
@@ -15,14 +19,18 @@ export default function Login() {
       password: password
     })
 
-    if (response) {
-      redirect('/')
+    if (response.data.data) {
+      setSession(response.data.data._id, response.data.data.company);
+      router.replace('/')
     }
   }
 
   useEffect(() => {
-
+    if(isLogin()) {
+      router.replace('/')
+    }
   }, [])
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">

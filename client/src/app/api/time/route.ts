@@ -8,10 +8,12 @@ export async function GET(req: Request) {
   const company = searchParams.get("company") as string;
   const year = searchParams.get("year") as string;
   const month = searchParams.get("month") as string;
+  const id = searchParams.get("userId") as string;
 
   try {
     await dbConnect();
     const dataList = await time.find({
+      staffId: id,
       company: company,
       date: { $regex: `^${year}-${month.padStart(2, '0')}` }
     });
@@ -24,8 +26,6 @@ export async function GET(req: Request) {
           date: data.date,
           title: data.name,
           extendedProps: {
-            startTime: data.start,
-            endTime: data.end,
             diff: calculateTime(data.start, data.end)
           }
         }
@@ -37,4 +37,8 @@ export async function GET(req: Request) {
     console.error(error)
     return Response.json({ data: null })
   }
+}
+
+export async function POST(req: Request) {
+  
 }
