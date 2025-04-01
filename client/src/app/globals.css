@@ -395,7 +395,7 @@
   @apply focus:shadow-none;
 }
 .fc-daygrid-event.fc-event-start {
-  @apply ml-3!;
+
 }
 .event-fc-color.fc-bg-success {
   @apply border-success-50 bg-success-50;
@@ -432,9 +432,9 @@
   border: none;
   color: black;
 }
-/* .fc.fc-media-screen {
-  @apply min-h-screen;
-} */
+.fc.fc-media-screen {
+  @apply min-h-[80vh];
+}
 
 .input-date-icon::-webkit-inner-spin-button,
 .input-date-icon::-webkit-calendar-picker-indicator {

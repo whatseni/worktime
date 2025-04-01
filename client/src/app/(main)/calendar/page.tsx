@@ -4,10 +4,9 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DatesSetArg, EventContentArg, EventInput } from "@fullcalendar/core/index.js";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
 import { useSession } from "@/src/context/LoginContext";
 
 interface CalendarEvent extends EventInput {
@@ -24,6 +23,8 @@ export default function Calendar() {
   const [year, setYear] = useState<number>(today.getFullYear());
   const [month, setMonth] = useState<number>(today.getMonth() + 1);
 
+  const [total, setTotal] = useState(0);
+
   const { getId, getCompany } = useSession();
 
   const handleDateSet = (dateInfo: DatesSetArg) => {
@@ -37,7 +38,8 @@ export default function Calendar() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time?company=${getCompany()}&year=${year}&month=${month}&userId=${getId()}`)
-      setEvents(response.data.data)
+      setEvents(response.data.data.data)
+      setTotal(response.data.data.totalTime)
     }
 
     fetchData();
@@ -57,21 +59,19 @@ export default function Calendar() {
               right: ""
             }}
             events={events}
-            height={400}
             datesSet={handleDateSet}
             eventContent={renderEventContent}
           />
         </div>
       </div>
-      <div className="rounded-2xl border border-gray-200 bg-blue-light-800">
-        시간
+      <div className="rounded-2xl border border-gray-200 bg-blue-light-400 w-[20%] text-white">
+        시간 
       </div>
     </>
   )
 }
 
 const renderEventContent = (eventInfo: EventContentArg) => {
-  console.log(eventInfo)
   return (
     <div className="event-fc-color flex fc-event-main fc-bg-primary rounded-sm">
       <div className="fc-event-title">{eventInfo.event.extendedProps.diff}</div>

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { sendNotification, subscribeUser, unsubscribeUser } from "../app/actions";
 import { urlBase64ToUnit8Array } from "../app/utils/urlBase";
+import Switch from "./common/Switch";
 
 export default function PushNotificationManager() {
   const [isSupported, setIsSupported] = useState(false);
@@ -55,27 +56,18 @@ export default function PushNotificationManager() {
   if (!isSupported) {
     return <p>Push notifications are not supported in this browser.</p>
   }
+
+  const handleChange = (checked: boolean) => {
+    if (checked) {
+      subscribeToPush()
+    } else {
+      unsubscribeFromPush()
+    }
+  }
   return (
-    <div>
-      <h3>Push Notifications</h3>
-      {subscription ? (
-        <>
-          <p>You are subscribed to push notifications.</p>
-          <button onClick={unsubscribeFromPush}>Unsubscribe</button>
-          <input
-            type="text"
-            placeholder="Enter notification message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <button onClick={sendTestNotification}>Send Test</button>
-        </>
-      ) : (
-        <>
-          <p>You are not subscribed to push notifications.</p>
-          <button onClick={subscribeToPush}>Subscribe</button>
-        </>
-      )}
-    </div>
+      <Switch 
+        label=""
+        defaultChecked={subscription ? true : false}
+        onChange={handleChange} />
   )
 }

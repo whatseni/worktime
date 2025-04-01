@@ -1,6 +1,8 @@
 import dbConnect from "@/src/lib/dbconnect";
 import time, { TimeType } from "@/src/models/time";
-import { calculateTime } from "../utils/format";
+import { calculateTime, calculateTotalTime } from "../utils/format";
+import { Types } from "mongoose";
+import staff from "@/src/models/staff";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -26,13 +28,17 @@ export async function GET(req: Request) {
           date: data.date,
           title: data.name,
           extendedProps: {
-            diff: calculateTime(data.start, data.end)
+            diff: calculateTime(data.start, data.end),
           }
         }
       )
     })
 
-    return Response.json({ data: returnData })
+    let res = await calculateTotalTime(id, company, year, month);
+    return Response.json({ data: {
+      data: returnData,
+      totalTime: res
+    }})
   } catch (error) {
     console.error(error)
     return Response.json({ data: null })
@@ -40,5 +46,35 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  
+  try {
+    await dbConnect();
+    const requestMap = await req.json();
+    const id = requestMap["id"];
+    const company = requestMap["company"];
+    const data = requestMap["data"];
+
+    const staffObj = await staff.findById(id);
+    try {
+      for(let i = 0; i < 7; i++) {
+        if (data[i].start && data[i].end) {
+          const temp = await time.create({
+            _id: new Types.ObjectId(),
+            staffId: id,
+            company: company,
+            name: staffObj.name,
+            date: data[i].date,
+            start: data[i].start,
+            end: data[i].end
+          })
+        }
+      }
+    } catch (e: any) {
+      throw new Error(e)
+    }
+    
+    return Response.json({ data: "success" })
+  } catch (error) {
+    console.log(error)
+    return Response.json({ code: "error" })
+  }
 }

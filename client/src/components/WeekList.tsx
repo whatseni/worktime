@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Input from "./common/Input"
+import axios from "axios";
+import { useSession } from "../context/LoginContext";
+import { set } from "mongoose";
 
 const DAY = ["일", "월", "화", "수", "목", "금", "토"]
 
@@ -15,9 +18,29 @@ const getStartOfWeek = (date: Date) => {
 export default function WeekList() {
   const today = new Date();
   const [weekStart, setWeekStart] = useState(getStartOfWeek(today));
+  const [start, setStart] = useState(Array(7).fill(""));
+  const [end, setEnd] = useState(Array(7).fill(""));
 
-  const handleSave = () => {
+  const { getId, getCompany } = useSession();
 
+  const handleSave = async () => {
+    let request_data = [];
+    for(let i = 0; i < 7; i++) {
+      const currentDate = new Date(weekStart);
+      currentDate.setDate(weekStart.getDate() + i);
+      const date = `${currentDate.getFullYear()}-${(currentDate.getMonth()+1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`
+      request_data.push({
+        date: date,
+        start: start[i],
+        end: end[i],
+      })
+    }
+
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time`, {
+      id: "67e348b08242b52c38530ab6",
+      company: "PB",
+      data: request_data
+    })
   }
 
   // 함수: 이전 주로 이동
@@ -25,6 +48,8 @@ export default function WeekList() {
     const prevWeekStart = new Date(weekStart);
     prevWeekStart.setDate(weekStart.getDate() - 7);
     setWeekStart(prevWeekStart);
+    setStart(Array(7).fill(""));
+    setEnd(Array(7).fill(""));
   };
 
   // 함수: 다음 주로 이동
@@ -32,7 +57,21 @@ export default function WeekList() {
     const nextWeekStart = new Date(weekStart);
     nextWeekStart.setDate(weekStart.getDate() + 7);
     setWeekStart(nextWeekStart);
+    setStart(Array(7).fill(""));
+    setEnd(Array(7).fill(""));
   };
+
+  const handleStartTimeChange = (index: number, value: string) => {
+    const newTimes = [...start];
+    newTimes[index] = value;
+    setStart(newTimes)
+  }
+
+  const handleEndTimeChange = (index: number, value: string) => {
+    const newTimes = [...end];
+    newTimes[index] = value;
+    setEnd(newTimes)
+  }
 
   // 주의 요일을 표시하는 JSX 생성
   const renderItems = () => {
@@ -45,21 +84,48 @@ export default function WeekList() {
 
       items.push(
         <li key={i} className="flex items-center gap-2 border-gray-200 px-3 py-2.5 text-sm w-[90%]">
-          <span className={`${(today.getMonth() === currentDate.getMonth() && today.getDate() === currentDate.getDate()) ? "text-indigo-700" : "text-gray-500"}`}>{dayOfWeek}({dateString})</span>
-          <Input type="time" />
-          <Input type="time" />
+          <span className={`${(today.getMonth() === currentDate.getMonth() && today.getDate() === currentDate.getDate()) ? "text-indigo-700" : "text-gray-500"} grow`}>{dayOfWeek}({dateString})</span>
+          <div className="grow-2">
+            <Input type="time" value={start[i]}
+            onChange={(e) => handleStartTimeChange(i, e.target.value)}
+          /></div>
+          <div className="grow-2">
+            <Input type="time" value={end[i]}
+            onChange={(e) => handleEndTimeChange(i, e.target.value)}
+          /></div>
+          
         </li>
       );
     }
     return items;
   };
+
+
   useEffect(() => {
     const fetchData = async () => {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time/week`, {
+        weekStart: weekStart,
+        company: getCompany(),
+        userId: getId()
+      })
 
+      let temp = response.data.data;
+      for(let i = 0; i < 7; i++) {
+        if (temp[i]) {
+          const newTimes = [...start];
+          newTimes[i] = temp[i].start;
+          setStart(newTimes);
+
+          const newTimes2 = [...end];
+          newTimes2[i] = temp[i].end;
+          setEnd(newTimes2);
+        }
+      }
     }
 
-    // fetchData();
-  }, [])
+    fetchData();
+  }, [weekStart])
+
 
   return (
     <div>
