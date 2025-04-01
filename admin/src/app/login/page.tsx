@@ -1,15 +1,18 @@
 "use client";
 
-import { useAdmin } from "@/src/context/AdminContext";
+import { useSession } from "@/src/context/AdminContext";
 import axios from "axios";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Login() {
 
   const [id, setId] = useState("")
   const [password, setPassword] = useState("");
-  const { login } = useAdmin();
+  const { setSession, isLogin } = useSession();
+
+  const router = useRouter();
 
   const handleLogin = async () => {
     const response = await axios.post(`${process.env.NEXT_PUBLIC_DEV_URL}/api/login`, {
@@ -18,13 +21,17 @@ export default function Login() {
     })
 
     if (response) {
-      login(response.data.data.id, response.data.data.company)
+      setSession(response.data.data.id, response.data.data.company)
       redirect('/')
+    } else {
+      toast.error("로그인 실패. 관리자에게 문의바람.")
     }
   }
 
   useEffect(() => {
-
+    if (isLogin()) {
+      router.replace('/')
+    }
   }, [])
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">

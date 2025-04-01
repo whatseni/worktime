@@ -45,8 +45,7 @@ export default function Calendar() {
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     const event = clickInfo.event;
-    console.log(event)
-    // setEventId(event.id)
+    setEventId(event.id)
     openModal();
   }
 

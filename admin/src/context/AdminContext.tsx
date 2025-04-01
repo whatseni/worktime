@@ -1,42 +1,65 @@
-"use client"
-import { createContext, useContext, useState } from "react";
+
+import { createContext, useContext, useEffect, useState } from 'react';
 
 type AdminContextType = {
-  id: string;
-  company: string;
-  login: (id: string, company: string) => void;
-  logout: () => void;
-};
+  setSession: (id: string, company: string) => void;
+  clearSession: () => void;
+  getId: () => string | null;
+  getCompany: () => string | null;
+  isLogin: () => boolean;
+}
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-export const useAdmin = () => {
+export const useSession = () => {
   const context = useContext(AdminContext);
   if (!context) {
-    throw new Error("useAdmin must be used within an AdminProvider");
+    throw new Error("useSession must be used within a UserProvider");
   }
   return context;
-};
+}
 
-export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [id, setId] = useState("");
-  const [company, setCompany] = useState("");
+export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [ready, setReady] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [company, setCompany] = useState<string | null>(null);
 
-  const login = (id: string, company: string) => {
-    setId(id);
+  // 클라이언트 사이드에서만 sessionStorage 사용
+  useEffect(() => {
+    const storedId = sessionStorage.getItem('id');
+    const storedCompany = sessionStorage.getItem('company');
+    if (storedId && storedCompany) {
+      setSessionId(storedId);
+      setCompany(storedCompany);
+    }
+    setReady(true);
+  }, []); // 최초 한 번만 실행
+
+  const setSession = (id: string, company: string) => {
+    sessionStorage.setItem('id', id);
+    sessionStorage.setItem('company', company);
+    setSessionId(id);
     setCompany(company);
-  };
+  }
 
-  const logout = () => {
-    setId("");
-    setCompany("");
-  };
+  const clearSession = () => {
+    sessionStorage.removeItem('id');
+    sessionStorage.removeItem('company');
+    setSessionId(null);
+    setCompany(null);
+  }
+
+  const getId = () => sessionId;
+
+  const getCompany = () => company;
+
+  const isLogin = () => !!sessionId && !!company;
+
+  if (!ready) return null; // 로딩 중이면 null 반환
 
   return (
-    <AdminContext.Provider value={{ id, company, login, logout }}>
+    <AdminContext.Provider value={{ setSession, clearSession, getId, getCompany, isLogin }}>
       {children}
     </AdminContext.Provider>
-  );
-};
+  )
+}

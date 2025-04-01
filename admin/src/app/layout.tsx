@@ -1,6 +1,8 @@
+import { ToastContainer } from "react-toastify";
 import { AdminProvider } from "../context/AdminContext";
 import { SidebarProvider } from "../context/SidebarContext";
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RootLayout({
   children,
@@ -14,6 +16,11 @@ export default function RootLayout({
         <AdminProvider>
           <SidebarProvider>
             {children}
+            <ToastContainer
+            autoClose={1000}
+            pauseOnFocusLoss={false}
+            pauseOnHover={false}
+          />
           </SidebarProvider>
         </AdminProvider>
       </body>
