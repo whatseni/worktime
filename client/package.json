@@ -23,6 +23,7 @@
     "next": "^15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-toastify": "^11.0.5",
     "ts-mongoose": "^0.0.24",
     "web-push": "^3.6.7"
   },

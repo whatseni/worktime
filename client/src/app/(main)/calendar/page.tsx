@@ -38,8 +38,10 @@ export default function Calendar() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time?company=${getCompany()}&year=${year}&month=${month}&userId=${getId()}`)
-      setEvents(response.data.data.data)
-      setTotal(response.data.data.totalTime)
+      if (response.data.code === 200) {
+        setEvents(response.data.data.data)
+        setTotal(response.data.data.totalTime)
+      }
     }
 
     fetchData();

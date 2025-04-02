@@ -35,13 +35,13 @@ export async function GET(req: Request) {
     })
 
     let res = await calculateTotalTime(id, company, year, month);
-    return Response.json({ data: {
+    return Response.json({ code: 200, data: {
       data: returnData,
       totalTime: res
     }})
   } catch (error) {
     console.error(error)
-    return Response.json({ data: null })
+    return Response.json({ code: 500, data: null })
   }
 }
 
@@ -72,9 +72,9 @@ export async function POST(req: Request) {
       throw new Error(e)
     }
     
-    return Response.json({ data: "success" })
+    return Response.json({ code: 200, data: "success" })
   } catch (error) {
     console.log(error)
-    return Response.json({ code: "error" })
+    return Response.json({ code: 500, data: "error" })
   }
 }

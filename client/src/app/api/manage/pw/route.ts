@@ -14,9 +14,9 @@ export async function POST(req: Request) {
     const data = await staff.findByIdAndUpdate({id: id}, {password: hashedPw})
     
     if (data)
-      return Response.json({ data: "success" })
+      return Response.json({ code: 200, data: "success" })
   } catch (error) {
     console.log(error)
-    return Response.json({ code: "error" })
+    return Response.json({ code: 500, data: "error" })
   }
 }

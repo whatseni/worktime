@@ -16,10 +16,10 @@ export async function POST(req: Request) {
 
     if (find) {
       await createSession(id)
-      return Response.json({ data: find })
+      return Response.json({ code: 200, data: find })
     }
   } catch (error) {
     console.log(error)
-    return Response.json({ code: "error" })
+    return Response.json({ code: 500, data: "error" })
   }
 }

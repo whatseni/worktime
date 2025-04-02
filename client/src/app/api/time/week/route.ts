@@ -32,9 +32,9 @@ export async function POST(req: Request) {
       result.push(data)
     }
 
-    return Response.json({ data: result})
+    return Response.json({ code: 200, data: result})
   } catch (error) {
     console.error(error)
-    return Response.json({ data: null })
+    return Response.json({ code: 500, data: null })
   }
 }

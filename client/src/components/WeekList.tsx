@@ -5,6 +5,7 @@ import Input from "./common/Input"
 import axios from "axios";
 import { useSession } from "../context/LoginContext";
 import { set } from "mongoose";
+import { toast } from "react-toastify";
 
 const DAY = ["일", "월", "화", "수", "목", "금", "토"]
 
@@ -37,10 +38,16 @@ export default function WeekList() {
     }
 
     const response = await axios.post(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time`, {
-      id: "67e348b08242b52c38530ab6",
-      company: "PB",
+      id: getId(),
+      company: getCompany(),
       data: request_data
     })
+
+    if (response.data.code === 200) {
+      toast.success("등록 성공.")
+    } else {
+      toast.error("등록 실패. 다시 확인 바람.")
+    }
   }
 
   // 함수: 이전 주로 이동
@@ -93,7 +100,6 @@ export default function WeekList() {
             <Input type="time" value={end[i]}
             onChange={(e) => handleEndTimeChange(i, e.target.value)}
           /></div>
-          
         </li>
       );
     }
@@ -109,16 +115,18 @@ export default function WeekList() {
         userId: getId()
       })
 
-      let temp = response.data.data;
-      for(let i = 0; i < 7; i++) {
-        if (temp[i]) {
-          const newTimes = [...start];
-          newTimes[i] = temp[i].start;
-          setStart(newTimes);
-
-          const newTimes2 = [...end];
-          newTimes2[i] = temp[i].end;
-          setEnd(newTimes2);
+      if(response.data.code === 200) {
+        let temp = response.data.data;
+        for(let i = 0; i < 7; i++) {
+          if (temp[i]) {
+            const newTimes = [...start];
+            newTimes[i] = temp[i].start;
+            setStart(newTimes);
+  
+            const newTimes2 = [...end];
+            newTimes2[i] = temp[i].end;
+            setEnd(newTimes2);
+          }
         }
       }
     }

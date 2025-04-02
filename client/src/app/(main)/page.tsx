@@ -5,14 +5,12 @@ import { useSession } from "@/src/context/LoginContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-
 export default function Home() {
   const { isLogin } = useSession();
 
   const router = useRouter();
 
   useEffect(() => {
-    console.log(isLogin())
     if (!isLogin()) {
       router.replace('/login')
     }

@@ -19,7 +19,7 @@ export default function Login() {
       password: password
     })
 
-    if (response.data.data) {
+    if (response.data.cpde === 200) {
       setSession(response.data.data._id, response.data.data.company);
       router.replace('/')
     }
