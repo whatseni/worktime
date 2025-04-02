@@ -9,6 +9,7 @@ import TrashBinIcon from "../../icons/trash.svg";
 import EditIcon from "../../icons/pencil.svg";
 import StaffInfoModal from "./StaffInfoModal";
 import { BANK_LIST } from "@/src/lib/bankList";
+import { toast } from "react-toastify";
 
 export default function StaffTable() {
   const [staffList, setStaffList] = useState([]);
@@ -22,7 +23,8 @@ export default function StaffTable() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios(`${process.env.NEXT_PUBLIC_DEV_URL}/api/staff?company=${"PB"}`)
-      setStaffList(response.data.data);
+      if (response.data.code === 200)
+        setStaffList(response.data.data);
     }
 
     fetchData();
@@ -30,7 +32,11 @@ export default function StaffTable() {
 
   const handleDelete = async (id: string) => {
     const response = await axios.delete(`${process.env.NEXT_PUBLIC_DEV_URL}/api/staff?id=${id}`)
-    console.log(response);
+    if (response.data.code === 200) {
+      toast.success("삭제 성공.")
+    } else {
+      toast.error("삭제 실패. 확인 바람.")
+    }
   }
 
   return (

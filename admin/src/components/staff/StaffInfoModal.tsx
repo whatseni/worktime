@@ -6,6 +6,7 @@ import axios from "axios";
 import Input from "../common/Input";
 import Select from "../common/Select";
 import { BANK_LIST } from "@/src/lib/bankList";
+import { toast } from "react-toastify";
 
 interface ModalProps {
   isOpen: boolean;
@@ -71,7 +72,12 @@ export default function StaffInfoModal({ isOpen, closeModal, info }: ModalProps)
       endTime: staffData.endTime,
       isWeek: false
     })
-    console.log(response);
+    
+    if(response.data.code === 200) {
+      toast.success("요청 성공.")
+    } else {
+      toast.error("요청 실패. 확인 바람.")
+    }
   }
 
   return (
@@ -190,20 +196,20 @@ export default function StaffInfoModal({ isOpen, closeModal, info }: ModalProps)
               근무 시간대
             </label>
             <div className="relative flex">
-              <Radio id="Mon" name="Mon" value="0" checked={staffData.workDay.includes("Mon")} 
-                onChange={() => handleDayChange("Mon")} label="월"/>
-              <Radio id="Tue" name="Tue" value="1" checked={staffData.workDay.includes("Tue")} 
-                onChange={() => handleDayChange("Tue")} label="화"/>
-              <Radio id="Wed" name="Wed" value="2" checked={staffData.workDay.includes("Wed")} 
-                onChange={() => handleDayChange("Wed")} label="수"/>
-              <Radio id="Thu" name="Thu" value="3" checked={staffData.workDay.includes("Thu")} 
-                onChange={() => handleDayChange("Thu")} label="목"/>
-              <Radio id="Fri" name="Fri" value="4" checked={staffData.workDay.includes("Fri")} 
-                onChange={() => handleDayChange("Fri")} label="금"/>
-              <Radio id="Sat" name="Sat" value="5" checked={staffData.workDay.includes("Sat")} 
-                onChange={() => handleDayChange("Sat")} label="토"/>
-              <Radio id="Sun" name="Sun" value="6" checked={staffData.workDay.includes("Sun")} 
-                onChange={() => handleDayChange("Sun")} label="일"/>
+              <Radio id="월" name="월" value="0" checked={staffData.workDay.includes("월")} 
+                onChange={() => handleDayChange("월")} label="월"/>
+              <Radio id="화" name="화" value="1" checked={staffData.workDay.includes("화")} 
+                onChange={() => handleDayChange("화")} label="화"/>
+              <Radio id="수" name="수" value="2" checked={staffData.workDay.includes("수")} 
+                onChange={() => handleDayChange("수")} label="수"/>
+              <Radio id="목" name="목" value="3" checked={staffData.workDay.includes("목")} 
+                onChange={() => handleDayChange("목")} label="목"/>
+              <Radio id="금" name="금" value="4" checked={staffData.workDay.includes("금")} 
+                onChange={() => handleDayChange("금")} label="금"/>
+              <Radio id="토" name="토" value="5" checked={staffData.workDay.includes("토")} 
+                onChange={() => handleDayChange("토")} label="토"/>
+              <Radio id="일" name="일" value="6" checked={staffData.workDay.includes("일")} 
+                onChange={() => handleDayChange("일")} label="일"/>
             </div>
           </div>
 

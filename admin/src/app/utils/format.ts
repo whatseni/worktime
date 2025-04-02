@@ -5,14 +5,10 @@ export function calculateTime(start: any, end: any) {
   const [eh, em] = end.split(':').map(Number)
 
   const hour = Number(((eh * 60 + em) - (sh * 60 + sm)) / 60);
-  const min = Number(((eh * 60 + em) - (sh * 60 + sm)) % 60);
 
-  return `${hour}h ${min}m`
+  return `${hour}h`
 }
 
-export function calculatePay() {
-
-}
 
 const CURRENT_PAY = 10030
 const CURRNET_WPAY = 13050

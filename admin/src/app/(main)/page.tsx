@@ -20,8 +20,6 @@ export default function Main() {
     }
   }, [])
   return (
-    <ProtectedRoute>
       <Calendars />
-    </ProtectedRoute>
   )
 }

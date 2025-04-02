@@ -1,5 +1,4 @@
 import dbConnect from "@/src/lib/dbconnect";
-import Time from "@/src/models/time";
 import { calculateStaffPay } from "../../utils/format";
 
 export async function GET(req: Request) {
@@ -14,9 +13,9 @@ export async function GET(req: Request) {
 
     const dataList = await calculateStaffPay(company, year, month)
 
-    return Response.json({ data: dataList })
+    return Response.json({ code: 200, data: dataList })
   } catch (error) {
     console.error(error)
-    return Response.json({ data: "error"})
+    return Response.json({ code: 500, data: "error"})
   }
 }

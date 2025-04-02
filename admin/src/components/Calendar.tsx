@@ -8,22 +8,34 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useRef, useState } from "react"
 import CalendarModal from "./calendar/CalendarModal";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { useSession } from "../context/AdminContext";
 
 interface CalendarEvent extends EventInput {
   extendedProps: {
+    staffId: string,
     startTime: string,
     endTime: string,
     diff: string
   }
 }
 
-export default function Calendar() {
+function formatDate(date: any) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+}
 
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+export default function Calendar() {
+  const { getCompany } = useSession();
+
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
-  const [eventId, setEventId] = useState("");
-  const [eventDate, setEventDate] = useState("");
+  const [eventId, setEventId] = useState<string | null>(null);
+  const [selectedStaff, setSelectedStaff] = useState<string>("");
+  const [eventDate, setEventDate] = useState<any>("");
   const [eventStartTime, setEventStartTime] = useState("");
   const [eventEndTime, setEventEndTime] = useState("");
   
@@ -35,7 +47,13 @@ export default function Calendar() {
   const [isOpen, setIsOpen] = useState(false);
   
   const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
+  const closeModal = () => {
+    setIsOpen(false);
+    setEventId(null);
+    setSelectedStaff("");
+  }
+
+  const [change, setChange] = useState(false);
 
   const handleDateSelect = (selectInfo: DateSelectArg) => {
     resetModalFields();
@@ -45,26 +63,42 @@ export default function Calendar() {
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     const event = clickInfo.event;
-    setEventId(event.id)
+    setEventId(event.id);
+    setSelectedStaff(event.extendedProps.staffId);
+    setEventDate(formatDate(event.start));
+    setEventStartTime(event.extendedProps.startTime);
+    setEventEndTime(event.extendedProps.endTime);
     openModal();
   }
 
   const handleAddEvents = async (selected: any) => {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time?company=${"PB"}`, {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time`, {
       date: eventDate,
       start: eventStartTime,
       end: eventEndTime,
       selected: selected,
-      company: "PB"
+      company: getCompany(),
+      id: eventId
     });
+
+    if (response.data.code === 200) {
+      setChange(prev => !prev);
+      toast.success("스케줄 생성 성공.");
+      closeModal()
+    } else if (response.data.code === "400") {
+      toast.error("스케줄 생성 실패. 다시 확인바람.");
+    }
   }
 
-  const handleDeleteEvent = async (selected: any) => {
-    const response = await axios.delete(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time?company=${"PB"}`, {
-      data: {
-        eventId: eventId
-      }
-    })
+  const handleDeleteEvent = async () => {
+    const response = await axios.delete(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time?id=${eventId}`)
+    if (response.data.code === 200) {
+      setChange(prev => !prev);
+      closeModal();
+      toast.success("스케줄 삭제 성공.");
+    } else if (response.data.code === "400") {
+      toast.error("스케줄 삭제 실패. 다시 확인바람.");
+    }
   }
 
   const resetModalFields = () => {
@@ -85,14 +119,15 @@ export default function Calendar() {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_DEV_URL}/api/time?company=PB&year=${year}&month=${month}`);
-        setEvents(response.data.data);
+        if (response.data.code === 200)
+          setEvents(response.data.data);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
     };
 
     fetchData();
-  },[year, month])
+  },[year, month, change])
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white">
@@ -118,11 +153,12 @@ export default function Calendar() {
           }}
           datesSet={handleDatesSet}
         />
-        <CalendarModal isOpen={isOpen} onClose={closeModal} selectedEvent={selectedEvent} 
+        <CalendarModal isOpen={isOpen} onClose={closeModal} eventId={eventId}
+        selectedStaff={selectedStaff} setSelectedStaff={setSelectedStaff}
         eventDate={eventDate} setEventDate={setEventDate}
         eventStartTime={eventStartTime} eventEndTime={eventEndTime}
         setEventStartTime={setEventStartTime} setEventEndTime={setEventEndTime}
-        handleAddEvents={handleAddEvents}
+        handleAddEvents={handleAddEvents} handleDeleteEvent={handleDeleteEvent}
         />
       </div>
     </div>

@@ -7,10 +7,10 @@ interface Option {
 interface SelectProps {
   options: Option[];
   placeholder?: string;
-  onChange: any;
+  onChange: (value: any) => void;
   className?: string;
-  defaultValue?: string;
   selectedValue: any;
+  defaultValue?: string;
 }
 
 export default function Select({
@@ -18,16 +18,15 @@ export default function Select({
   placeholder,
   onChange,
   className = "",
-  defaultValue = "",
-  selectedValue
+  selectedValue,
 }: SelectProps) {
 
   return (
     <select
     className={`h-11 w-full appearance-none rounded-lg border border-gray-300  px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 ${
       selectedValue
-        ? "text-gray-800 dark:text-white/90"
-        : "text-gray-400 dark:text-gray-400"
+        ? "text-gray-800"
+        : "text-gray-400"
     } ${className}`}
     value={selectedValue}
     onChange={onChange}

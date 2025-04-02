@@ -17,6 +17,7 @@ export default function RootLayout({
           <SidebarProvider>
             {children}
             <ToastContainer
+            position="bottom-right"
             autoClose={1000}
             pauseOnFocusLoss={false}
             pauseOnHover={false}

@@ -15,7 +15,7 @@ export default function StaffAdd() {
         className="inline-flex items-center justify-center font-medium gap-2 rounded-lg transition px-4 py-3 text-sm bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300"
         onClick={openModal}
       >추가</button>
-      <StaffInfoModal isOpen={isOpen} closeModal={closeModal}/>
+      <StaffInfoModal isOpen={isOpen} closeModal={closeModal} info={null}/>
     </div>
   )
 }

@@ -35,7 +35,8 @@ export default function PayTable() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios(`${process.env.NEXT_PUBLIC_DEV_URL}/api/pay?company=${"PB"}&year=${year}&month=${month}`)
-      setData(response.data.data)
+      if (response.data.code === 200)
+        setData(response.data.data)
     }
 
     fetchData();

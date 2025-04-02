@@ -2,12 +2,14 @@
 import React, { useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 
 import CalendarIcon from "../icons/calendar.svg"
 import UserCircleIcon from "../icons/user-circle.svg"
 import DollarIcon from "../icons/dollar-line.svg"
+import { useSession } from "../context/AdminContext";
+import axios from "axios";
 
 type NavItem = {
   name: string;
@@ -36,6 +38,8 @@ const navItems: NavItem[] = [
 
 export default function AppSidebar() {
   const { isExpanded, isMobileOpen } = useSidebar();
+  const { clearSession } = useSession();
+  const router = useRouter();
   const pathname = usePathname();
 
   const renderMenuItems = (
@@ -72,8 +76,15 @@ export default function AppSidebar() {
     </ul>
   );
 
-   const isActive = useCallback((path: string) => path === pathname, [pathname]);
+  const isActive = useCallback((path: string) => path === pathname, [pathname]);
 
+  const handleLogout = async () => {
+    const response = await axios(`${process.env.NEXT_PUBLIC_DEV_URL}/api/logout`)
+    if (response.data.code === 200) {
+      clearSession();
+      router.replace('/login');
+    }
+  }
   return (
     <aside
       className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
@@ -130,6 +141,7 @@ export default function AppSidebar() {
           </div>
         </nav>
       </div>
+      <button className="flex m-4 text-gray-400 justify-end" onClick={handleLogout}>logout</button>
     </aside>
   );
 };

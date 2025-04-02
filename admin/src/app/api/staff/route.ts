@@ -13,10 +13,10 @@ export async function GET(req: Request) {
       company: company
     });
 
-    return Response.json({ data: dataList })
+    return Response.json({ code: 200, data: dataList })
   } catch (error) {
-    console.error("error find time")
-    return Response.json({ data: "error"})
+    console.error(error)
+    return Response.json({ code: 500, data: "error"})
   }
 }
 
@@ -31,10 +31,10 @@ export async function POST(req: Request) {
       await dbConnect();
       const data = await Staff.findByIdAndUpdate(id, requestMap)
   
-      return Response.json({ data: data })
+      return Response.json({ code: 200, data: data })
     } catch (error) {
       console.error(error)
-      return Response.json({ data: "error"})
+      return Response.json({ code: 500, data: "error"})
     }
   } else {
     try {
@@ -44,10 +44,10 @@ export async function POST(req: Request) {
         ...requestMap
       });
   
-      return Response.json({ data: data })
+      return Response.json({ code: 200, data: data })
     } catch (error) {
-      console.error("error find time")
-      return Response.json({ data: "error"})
+      console.error(error)
+      return Response.json({ code: 500, data: "error"})
     }
   }
 }
@@ -59,9 +59,9 @@ export async function DELETE(req: Request) {
     await dbConnect();
     const data = await Staff.findByIdAndDelete(id)
 
-    return Response.json({ data: data })
+    return Response.json({ code: 200, data: data })
   } catch (error) {
-    console.error("error find time")
-    return Response.json({ data: "error"})
+    console.error(error)
+    return Response.json({ code: 500, data: "error"})
   }
 }
