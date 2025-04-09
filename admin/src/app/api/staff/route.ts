@@ -1,5 +1,5 @@
-import dbConnect from "@/src/lib/dbconnect";
-import Staff from "@/src/models/staff";
+import dbConnect from "@/lib/dbconnect";
+import Staff from "@/models/staff";
 import { Types } from "mongoose";
 
 export async function GET(req: Request) {

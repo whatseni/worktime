@@ -1,12 +1,11 @@
 "use client"
 
-import ProtectedRoute from "@/src/components/ProtectedRoute";
-import { useSession } from "@/src/context/AdminContext";
+import { useSession } from "@/context/AdminContext";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const Calendars = dynamic(() => import('@/src/components/Calendar'), {
+const Calendars = dynamic(() => import('@/components/Calendar'), {
   ssr: false,
   loading: () => <>loading...</>
 })

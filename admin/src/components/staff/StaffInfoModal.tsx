@@ -5,7 +5,7 @@ import Switch from "../common/Switch";
 import axios from "axios";
 import Input from "../common/Input";
 import Select from "../common/Select";
-import { BANK_LIST } from "@/src/lib/bankList";
+import { BANK_LIST } from "@/lib/bankList";
 import { toast } from "react-toastify";
 
 interface ModalProps {

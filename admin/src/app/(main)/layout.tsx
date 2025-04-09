@@ -1,9 +1,9 @@
 "use client";
 
-import AppHeader from "@/src/components/AppHeader";
-import AppSidebar from "@/src/components/AppSidebar";
-import ProtectedRoute from "@/src/components/ProtectedRoute";
-import { useSidebar } from "@/src/context/SidebarContext";
+import AppHeader from "@/components/AppHeader";
+import AppSidebar from "@/components/AppSidebar";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { useSidebar } from "@/context/SidebarContext";
 
 export default function MainLayout({ children }: {
   children: React.ReactNode;

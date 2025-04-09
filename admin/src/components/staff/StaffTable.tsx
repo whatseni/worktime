@@ -8,7 +8,7 @@ import axios from "axios";
 import TrashBinIcon from "../../icons/trash.svg";
 import EditIcon from "../../icons/pencil.svg";
 import StaffInfoModal from "./StaffInfoModal";
-import { BANK_LIST } from "@/src/lib/bankList";
+import { BANK_LIST } from "@/lib/bankList";
 import { toast } from "react-toastify";
 
 export default function StaffTable() {

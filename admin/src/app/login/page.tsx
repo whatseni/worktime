@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "@/src/context/AdminContext";
+import { useSession } from "@/context/AdminContext";
 import axios from "axios";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

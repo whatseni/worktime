@@ -1,4 +1,4 @@
-import time from "@/src/models/time";
+import time from "@/models/time";
 
 export function calculateTime(start: any, end: any) {
   const [sh, sm] = start.split(':').map(Number)

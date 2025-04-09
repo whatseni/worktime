@@ -1,4 +1,4 @@
-import PayTable from "@/src/components/pay/PayTable";
+import PayTable from "@/components/pay/PayTable";
 
 export default function PayPage() {
   return (

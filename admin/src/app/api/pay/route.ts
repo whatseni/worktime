@@ -1,4 +1,4 @@
-import dbConnect from "@/src/lib/dbconnect";
+import dbConnect from "@/lib/dbconnect";
 import { calculateStaffPay } from "../../utils/format";
 
 export async function GET(req: Request) {

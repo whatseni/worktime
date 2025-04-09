@@ -16,6 +16,7 @@
     "@fullcalendar/timegrid": "^6.1.15",
     "@types/mongoose": "^5.11.97",
     "axios": "^1.8.4",
+    "jose": "^6.0.10",
     "mongoose": "^8.12.1",
     "next": "15.2.3",
     "react": "^19.0.0",
