@@ -70,11 +70,12 @@ export default function StaffInfoModal({ isOpen, closeModal, info }: ModalProps)
       workDay: staffData.workDay,
       startTime: staffData.startTime,
       endTime: staffData.endTime,
-      isWeek: false
+      isWeek: staffData.isWeek
     })
     
     if(response.data.code === 200) {
       toast.success("요청 성공.")
+      closeModal();
     } else {
       toast.error("요청 실패. 확인 바람.")
     }
@@ -257,6 +258,7 @@ export default function StaffInfoModal({ isOpen, closeModal, info }: ModalProps)
               label="주휴 수당"
               defaultChecked={staffData.isWeek}
               onChange={(checked) => {
+                console.log(checked)
                 setStaffData((prev: any) => ({
                   ...prev,
                   isWeek: checked

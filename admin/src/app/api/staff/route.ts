@@ -39,9 +39,14 @@ export async function POST(req: Request) {
   } else {
     try {
       await dbConnect();
+      let tempPw = requestMap.birth;
+      let [year, month, date] = tempPw.split("-");
+      year = year.slice(2);
+      let pw = `${year}${month}${date}`;
       const data = await Staff.create({
         _id: new Types.ObjectId(),
-        ...requestMap
+        ...requestMap,
+        password: pw
       });
   
       return Response.json({ code: 200, data: data })

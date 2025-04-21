@@ -1,8 +1,8 @@
-import dbConnect from "@/src/lib/dbconnect";
-import time, { TimeType } from "@/src/models/time";
+import dbConnect from "@/lib/dbconnect";
+import time, { TimeType } from "@/models/time";
 import { calculateTime, calculateTotalTime } from "../utils/format";
 import { Types } from "mongoose";
-import staff from "@/src/models/staff";
+import staff from "@/models/staff";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);

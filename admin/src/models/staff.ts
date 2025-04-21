@@ -15,7 +15,8 @@ const StaffSchema = new Schema({
   workDay: Array,
   startTime: String,
   endTime: String,
-  isWeek: Boolean
+  isWeek: Boolean,
+  password: String
 });
 
 type StaffType = InferSchemaType<typeof StaffSchema>;

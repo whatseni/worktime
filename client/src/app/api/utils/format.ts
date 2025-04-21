@@ -1,4 +1,4 @@
-import time from "@/src/models/time";
+import time from "@/models/time";
 import { Types } from "mongoose";
 
 export function calculateTime(start: any, end: any) {

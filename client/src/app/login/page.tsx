@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "@/src/context/LoginContext";
+import { useSession } from "@/context/LoginContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ export default function Login() {
       password: password
     })
 
-    if (response.data.cpde === 200) {
+    if (response.data.code === 200) {
       setSession(response.data.data._id, response.data.data.company);
       router.replace('/')
     }

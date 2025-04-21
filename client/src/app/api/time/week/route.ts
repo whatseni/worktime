@@ -1,5 +1,5 @@
-import dbConnect from "@/src/lib/dbconnect";
-import time, { TimeType } from "@/src/models/time";
+import dbConnect from "@/lib/dbconnect";
+import time, { TimeType } from "@/models/time";
 
 export async function POST(req: Request) {
 
@@ -28,6 +28,7 @@ export async function POST(req: Request) {
         start: true,
         end: true
       })
+      console.log(year, month, date, data)
       
       result.push(data)
     }

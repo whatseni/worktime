@@ -1,5 +1,5 @@
-import dbConnect from "@/src/lib/dbconnect";
-import staff from "@/src/models/staff";
+import dbConnect from "@/lib/dbconnect";
+import staff from "@/models/staff";
 import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {

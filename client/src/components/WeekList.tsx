@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Input from "./common/Input"
 import axios from "axios";
 import { useSession } from "../context/LoginContext";
-import { set } from "mongoose";
 import { toast } from "react-toastify";
 
 const DAY = ["일", "월", "화", "수", "목", "금", "토"]
@@ -71,12 +70,14 @@ export default function WeekList() {
   const handleStartTimeChange = (index: number, value: string) => {
     const newTimes = [...start];
     newTimes[index] = value;
+    console.log(newTimes);
     setStart(newTimes)
   }
 
   const handleEndTimeChange = (index: number, value: string) => {
     const newTimes = [...end];
     newTimes[index] = value;
+    console.log(newTimes);
     setEnd(newTimes)
   }
 
@@ -117,15 +118,17 @@ export default function WeekList() {
 
       if(response.data.code === 200) {
         let temp = response.data.data;
+        const newTimes = [...start];
+        const newTimes2 = [...end];
         for(let i = 0; i < 7; i++) {
           if (temp[i]) {
-            const newTimes = [...start];
             newTimes[i] = temp[i].start;
             setStart(newTimes);
   
-            const newTimes2 = [...end];
             newTimes2[i] = temp[i].end;
             setEnd(newTimes2);
+
+            console.log(newTimes, newTimes2)
           }
         }
       }

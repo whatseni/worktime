@@ -1,7 +1,8 @@
 "use client"
 
-import WeekList from "@/src/components/WeekList";
-import { useSession } from "@/src/context/LoginContext";
+
+import WeekList from "@/components/WeekList";
+import { useSession } from "@/context/LoginContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

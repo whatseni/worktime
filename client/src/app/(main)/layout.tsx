@@ -1,5 +1,6 @@
-import AppHeader from "@/src/components/AppHeader"
-import ProtectedRoute from "@/src/components/ProtectedRoute"
+import AppHeader from "@/components/AppHeader"
+import ProtectedRoute from "@/components/ProtectedRoute"
+
 
 export default function MainLayout({ children }: {
   children: React.ReactNode

@@ -1,7 +1,7 @@
 "use client"
 
-import PushNotificationManager from "@/src/components/PushNotificationManger";
-import { useSession } from "@/src/context/LoginContext";
+import PushNotificationManager from "@/components/PushNotificationManger";
+import { useSession } from "@/context/LoginContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -25,10 +25,10 @@ export default function Manage() {
         <span>{getCompany()}</span>
       </div>
 
-      <div className="flex justify-between m-4">
+      {/* <div className="flex justify-between m-4">
         <span className="text-theme-md text-gray-800">알림</span>
         <PushNotificationManager />
-      </div>
+      </div> */}
 
       <div className="border m-2"></div>
 

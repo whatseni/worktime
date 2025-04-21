@@ -7,7 +7,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import React, { useEffect, useRef, useState } from "react";
 import { DatesSetArg, EventContentArg, EventInput } from "@fullcalendar/core/index.js";
 import axios from "axios";
-import { useSession } from "@/src/context/LoginContext";
+import { useSession } from "@/context/LoginContext";
 
 interface CalendarEvent extends EventInput {
   extendedProps: {
@@ -66,9 +66,12 @@ export default function Calendar() {
           />
         </div>
       </div>
-      <div className="rounded-2xl border border-gray-200 bg-blue-light-400 w-[20%] text-white">
-        시간 
+      <div className="flex justify-center items-center m-4">
+        <span className="rounded-md border bg-blue-light-400 w-lg text-white text-center p-2">
+          시간 : {total}
+        </span>
       </div>
+
     </>
   )
 }
