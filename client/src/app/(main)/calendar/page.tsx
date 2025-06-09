@@ -71,7 +71,6 @@ export default function Calendar() {
           시간 : {total}
         </span>
       </div>
-
     </>
   )
 }

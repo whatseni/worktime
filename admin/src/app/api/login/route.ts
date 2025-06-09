@@ -11,10 +11,10 @@ export async function POST(req: Request) {
     const findAdmin = await Admin.findOne({id: id, password: pw})
 
     if (findAdmin)
-      return Response.json({ data: findAdmin })
+      return Response.json({ code: 200, data: findAdmin })
     else
       throw new Error("Cannot find Admin")
   } catch (error) {
-    return Response.json({ code: "error" })
+    return Response.json({ code: 500, data: "error" })
   }
 }

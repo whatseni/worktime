@@ -20,7 +20,7 @@ export default function Login() {
       password: password
     })
 
-    if (response) {
+    if (response.data.code === 200) {
       setSession(response.data.data.id, response.data.data.company)
       redirect('/')
     } else {

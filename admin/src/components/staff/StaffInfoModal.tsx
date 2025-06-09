@@ -8,14 +8,27 @@ import Select from "../common/Select";
 import { BANK_LIST } from "@/lib/bankList";
 import { toast } from "react-toastify";
 
+type StaffInfo = {
+  _id: string;
+  name: string;
+  birth: string;
+  phone: string;
+  bank: string;
+  bankAccount: string;
+  workDay: string[];
+  startTime: string;
+  endTime: string;
+  isWeek: boolean;
+}
+
 interface ModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  info: any;
+  info: StaffInfo | null;
 }
 export default function StaffInfoModal({ isOpen, closeModal, info }: ModalProps) {
   
-  const [staffData, setStaffData] = useState<any>({
+  const [staffData, setStaffData] = useState<StaffInfo>({
     _id: "",
     name: "",
     birth: "",
@@ -37,7 +50,7 @@ export default function StaffInfoModal({ isOpen, closeModal, info }: ModalProps)
   }, [info]);
 
   const handleDayChange = (day: string) => {
-    setStaffData((prev: any) => {
+    setStaffData((prev: StaffInfo) => {
       const workDay = prev.workDay.includes(day)
         ? prev.workDay.filter((d: string) => d !== day)
         : [...prev.workDay, day];
@@ -52,7 +65,7 @@ export default function StaffInfoModal({ isOpen, closeModal, info }: ModalProps)
     setError(!isValidPhone);
   
     if (isValidPhone) {
-      setStaffData((prev: any) => ({
+      setStaffData((prev: StaffInfo) => ({
         ...prev,
         phone: value
       }));

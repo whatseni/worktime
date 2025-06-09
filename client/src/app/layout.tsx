@@ -2,6 +2,7 @@ import "./globals.css";
 import Provider from "./providers";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+
 export default function RootLayout({
   children,
 }: Readonly<{

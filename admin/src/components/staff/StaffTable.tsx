@@ -11,9 +11,22 @@ import StaffInfoModal from "./StaffInfoModal";
 import { BANK_LIST } from "@/lib/bankList";
 import { toast } from "react-toastify";
 
+type StaffInfo = {
+  _id: string;
+  name: string;
+  birth: string;
+  phone: string;
+  bank: string;
+  bankAccount: string;
+  workDay: string[];
+  startTime: string;
+  endTime: string;
+  isWeek: boolean;
+}
+
 export default function StaffTable() {
-  const [staffList, setStaffList] = useState([]);
-  const [editStaff, setEditStaff] = useState();
+  const [staffList, setStaffList] = useState<StaffInfo[]>([]);
+  const [editStaff, setEditStaff] = useState<StaffInfo | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
   
@@ -95,16 +108,7 @@ export default function StaffTable() {
                 ))
               }
             </TableBody>
-            
           </Table>
-          {/* <div className="px-6 py-4 border-t border-gray-200 dark:border-white/[0.05]">
-            <Pagination 
-              currentPage={0}
-              totalPages={2}
-              onPageChange={() => {}}
-            />
-          </div> */}
-          
         </div>
       </div>
     </div>

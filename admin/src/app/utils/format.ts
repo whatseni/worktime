@@ -9,72 +9,8 @@ export function calculateTime(start: any, end: any) {
   return `${hour}h`
 }
 
-
 const CURRENT_PAY = 10030
 const CURRNET_WPAY = 13050
-// export const calculateStaffPay = async (company: any, year: any, month: any) => {
-//   const result = await time.aggregate([
-//     // 1. 필터링 조건
-//     {
-//       $match: {
-//         company: company, // 동적으로 회사 지정
-//         date: { 
-//           $regex: `^${year}-${month.padStart(2, '0')}` // 년도와 월 동적 지정
-//         }
-//       }
-//     },
-    
-//     // 2. 작업별 그룹화 및 총 근무 시간 계산
-//     {
-//       $group: {
-//         _id: {
-//           staffId: "$staffId",
-//           name: "$name"
-//         },
-//         totalTime: {
-//           $sum: {
-//             $let: {
-//               vars: {
-//                 startTime: { $toDate: { $concat: ["2000-01-01T", "$start", ":00.000Z"] } },
-//                 endTime: { $toDate: { $concat: ["2000-01-01T", "$end", ":00.000Z"] } }
-//               },
-//               in: { 
-//                 $divide: [
-//                   { $subtract: ["$$endTime", "$$startTime"] },
-//                   1000 * 60 * 60 // 밀리초를 시간으로 변환
-//                 ]
-//               }
-//             }
-//           }
-//         }
-//       }
-//     },
-    
-//     // 3. 급여 계산 및 최종 형태 변환
-//     {
-//       $project: {
-//         staffId: "$_id.staffId",
-//         name: "$_id.name",
-//         totalTime: { $round: ["$totalTime", 1] },
-//         pay: { $multiply: ["$totalTime", CURRENT_PAY] },
-//         payintax: { 
-//           $multiply: [
-//             { $multiply: ["$totalTime", CURRENT_PAY] },
-//             0.967 // 세후 비율 (96.7%)
-//           ]
-//         },
-//         _id: 0
-//       }
-//     },
-    
-//     // 4. 결과 정렬
-//     {
-//       $sort: { totalTime: -1 }
-//     }
-//   ]);
-
-//   return result;
-// };
 
 export const calculateStaffPay = async (company: any, year: any, month: any) => {
   const result = await time.aggregate([

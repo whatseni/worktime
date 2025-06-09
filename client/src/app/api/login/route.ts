@@ -8,9 +8,9 @@ export async function POST(req: Request) {
     const requestMap = await req.json();
    
     const id = requestMap["id"];
-    let one = id.splice(0, 3)
-    let two = id.splice(3, 7);
-    let three = id.splie(7);
+    let one = id.slice(0, 3);
+    let two = id.slice(3, 7);
+    let three = id.slice(7);
     let str = `${one}-${two}-${three}`;
     const pw = requestMap["password"];
     const find = await staff.findOne({phone: str, password: pw}, {

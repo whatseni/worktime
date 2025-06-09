@@ -1,13 +1,14 @@
 "use client"
 
+import Loading from "@/components/common/Loading";
 import { useSession } from "@/context/AdminContext";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const Calendars = dynamic(() => import('@/components/Calendar'), {
+const DynamicCalendars = dynamic(() => import('@/components/Calendar'), {
   ssr: false,
-  loading: () => <>loading...</>
+  loading: () => <Loading />
 })
 
 export default function Main() {
@@ -19,6 +20,6 @@ export default function Main() {
     }
   }, [])
   return (
-      <Calendars />
+      <DynamicCalendars />
   )
 }

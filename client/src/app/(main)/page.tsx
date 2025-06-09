@@ -1,10 +1,15 @@
 "use client"
 
-
-import WeekList from "@/components/WeekList";
+import Loading from "@/components/common/Loading";
 import { useSession } from "@/context/LoginContext";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+
+const DynamicMain = dynamic(() => import('@/components/WeekList'), {
+  ssr: false,
+  loading: () => <Loading />
+})
 
 export default function Home() {
   const { isLogin } = useSession();
@@ -18,7 +23,7 @@ export default function Home() {
   }, [])
   return (
     <>
-      <WeekList/>
+      <DynamicMain/>
     </>
   )
 }
